@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manga4Up | Admin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+<fieldset>
+  <form>
+    <select name="title" id="Title"></select>
+    
+    <input type="number" name="number" id="Number" placeholder="volume number">
+    
+    <input type="number" name="from" placeholder="from">
+    <input type="number" name="to" placeholder="to">
+    
+    <input type="text" name="size" placeholder="file size">
+    
+    <input type="text" name="link1" placeholder="link 1">
+    <input type="text" name="link2" placeholder="link 2">
+    
+    <input type="file" name="cover" id="cover" accept="image*/">
+    <button name="btn">upload</button>
+    <progress value="0" max="100"></progress>
+  </form>
+</fieldset>
+
+  
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
