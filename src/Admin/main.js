@@ -6,6 +6,8 @@ const pro = document.querySelector('progress');
 
 let list2 = {
   '': '',
+  'Noragami': 'running',
+  'The Four Knights of Apocalypse': 'running',
   'Ao No Exorcist': 'running',
   'Boruto NNG' : 'running',
   'Fairy Tail 100 Years Quest' : 'running',
@@ -16,12 +18,13 @@ let list2 = {
   'Nanatsu no Taizai' : 'finished',
   'The Promised Neverland' : 'finished',
   'Tokyo Ghoul' : 'finished',
+  'Tokyo Ghoul:re' : 'finished',
   'Attack On Titans' : 'finished',
   'Dragon Ball Super' : 'running',
   'Dr: Stone' : 'finished',
   'Black Clover' : 'running',
   'Boku No Hero Academia' : 'running',
-  'Kuzumi-kun, Cant You Read the Room' : 'finished',
+  //'Kuzumi-kun, Cant You Read the Room' : 'finished',
   //'Burn The Witch' : ' finished',
   //'I Sold My Life For Ten Thousand Yen Per Year' : 'finished',
   //'Mairimashita, Senpai' : 'finished',
