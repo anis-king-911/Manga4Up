@@ -5205,4 +5205,4 @@
   return window.less = Vt, Mt.onReady && (/!watch/.test(window.location.hash) && Vt.watch(), Mt.async || (Pt = "body { display: none !important }", Rt = document.head || document.getElementsByTagName("head")[0], (Ot = document.createElement("style")).type = "text/css", Ot.styleSheet ? Ot.styleSheet.cssText = Pt : Ot.appendChild(document.createTextNode(Pt)), Rt.appendChild(Ot)), Vt.registerStylesheetsImmediately(), Vt.pageLoadFinished = Vt.refresh("development" === Vt.env).then(Ft, Ft)), Vt
 }));
 
-// sourceMappingURL=less.min.js.map
+//# sourceMappingURL=less.min.js.map
