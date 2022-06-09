@@ -1,8 +1,8 @@
 /**
- * Less - Leaner CSS v4.1.2
+ * Less - Leaner CSS v4.1.3
  * http://lesscss.org
  * 
- * Copyright (c) 2009-2021, Alexis Sellier <self@cloudhead.net>
+ * Copyright (c) 2009-2022, Alexis Sellier <self@cloudhead.net>
  * Licensed under the Apache-2.0 License.
  *
  * @license Apache-2.0
@@ -17,12 +17,13 @@
   }
 
   function t(e, t) {
-      for (var i in t.dataset)
-          if (t.dataset.hasOwnProperty(i))
-              if ("env" === i || "dumpLineNumbers" === i || "rootpath" === i || "errorReporting" === i) e[i] = t.dataset[i];
-              else try {
-                  e[i] = JSON.parse(t.dataset[i])
-              } catch (e) {}
+      if (t)
+          for (var i in t.dataset)
+              if (t.dataset.hasOwnProperty(i))
+                  if ("env" === i || "dumpLineNumbers" === i || "rootpath" === i || "errorReporting" === i) e[i] = t.dataset[i];
+                  else try {
+                      e[i] = JSON.parse(t.dataset[i])
+                  } catch (e) {}
   }
   var i = function(t, i, n) {
           var r = n.href || "",
@@ -844,6 +845,32 @@
   var D = function(e, t, i, n, r, s, o, a) {
       this.name = e, this.value = t instanceof u ? t : new $([t ? new j(t) : null]), this.important = i ? " " + i.trim() : "", this.merge = n, this._index = r, this._fileInfo = s, this.inline = o || !1, this.variable = void 0 !== a ? a : e.charAt && "@" === e.charAt(0), this.allowRoot = !0, this.setParent(this.value, this)
   };
+
+  function B(e) {
+      return "/* line " + e.debugInfo.lineNumber + ", " + e.debugInfo.fileName + " */\n"
+  }
+
+  function U(e) {
+      var t = e.debugInfo.fileName;
+      return /^[a-z]+:\/\//i.test(t) || (t = "file://" + t), "@media -sass-debug-info{filename{font-family:" + t.replace(/([.:\/\\])/g, (function(e) {
+          return "\\" == e && (e = "/"), "\\" + e
+      })) + "}line{font-family:\\00003" + e.debugInfo.lineNumber + "}}\n"
+  }
+
+  function q(e, t, i) {
+      var n = "";
+      if (e.dumpLineNumbers && !e.compress) switch (e.dumpLineNumbers) {
+          case "comments":
+              n = B(t);
+              break;
+          case "mediaquery":
+              n = U(t);
+              break;
+          case "all":
+              n = B(t) + (i || "") + U(t)
+      }
+      return n
+  }
   D.prototype = Object.assign(new u, {
       type: "Declaration",
       genCSS: function(e, t) {
@@ -889,79 +916,55 @@
           return new D(this.name, this.value, "!important", this.merge, this.getIndex(), this.fileInfo(), this.inline)
       }
   });
-  var B = function() {
-          function e(t, i, n) {
-              var r = "";
-              if (t.dumpLineNumbers && !t.compress) switch (t.dumpLineNumbers) {
-                  case "comments":
-                      r = e.asComment(i);
-                      break;
-                  case "mediaquery":
-                      r = e.asMediaQuery(i);
-                      break;
-                  case "all":
-                      r = e.asComment(i) + (n || "") + e.asMediaQuery(i)
-              }
-              return r
-          }
-          return e.asComment = function(e) {
-              return "/* line " + e.debugInfo.lineNumber + ", " + e.debugInfo.fileName + " */\n"
-          }, e.asMediaQuery = function(e) {
-              var t = e.debugInfo.fileName;
-              return /^[a-z]+:\/\//i.test(t) || (t = "file://" + t), "@media -sass-debug-info{filename{font-family:" + t.replace(/([.:\/\\])/g, (function(e) {
-                  return "\\" == e && (e = "/"), "\\" + e
-              })) + "}line{font-family:\\00003" + e.debugInfo.lineNumber + "}}\n"
-          }, e
-      }(),
-      U = function(e, t, i, n) {
-          this.value = e, this.isLineComment = t, this._index = i, this._fileInfo = n, this.allowRoot = !0
-      };
-  U.prototype = Object.assign(new u, {
+  var T = function(e, t, i, n) {
+      this.value = e, this.isLineComment = t, this._index = i, this._fileInfo = n, this.allowRoot = !0
+  };
+  T.prototype = Object.assign(new u, {
       type: "Comment",
       genCSS: function(e, t) {
-          this.debugInfo && t.add(B(e, this), this.fileInfo(), this.getIndex()), t.add(this.value)
+          this.debugInfo && t.add(q(e, this), this.fileInfo(), this.getIndex()), t.add(this.value)
       },
       isSilent: function(e) {
           var t = e.compress && "!" !== this.value[2];
           return this.isLineComment || t
       }
   });
-  var q = {},
-      T = function(e, t, i) {
+  var z = {},
+      G = function(e, t, i) {
           if (e)
               for (var n = 0; n < i.length; n++) e.hasOwnProperty(i[n]) && (t[i[n]] = e[i[n]])
       },
-      z = ["paths", "rewriteUrls", "rootpath", "strictImports", "insecure", "dumpLineNumbers", "compress", "syncImport", "chunkInput", "mime", "useFileCache", "processImports", "pluginManager"];
-  q.Parse = function(e) {
-      T(e, this, z), "string" == typeof this.paths && (this.paths = [this.paths])
+      W = ["paths", "rewriteUrls", "rootpath", "strictImports", "insecure", "dumpLineNumbers", "compress", "syncImport", "chunkInput", "mime", "useFileCache", "processImports", "pluginManager"];
+  z.Parse = function(e) {
+      G(e, this, W), "string" == typeof this.paths && (this.paths = [this.paths])
   };
-  var G = ["paths", "compress", "math", "strictUnits", "sourceMap", "importMultiple", "urlArgs", "javascriptEnabled", "pluginManager", "importantScope", "rewriteUrls"];
+  var J = ["paths", "compress", "math", "strictUnits", "sourceMap", "importMultiple", "urlArgs", "javascriptEnabled", "pluginManager", "importantScope", "rewriteUrls"];
 
-  function W(e) {
+  function H(e) {
       return !/^(?:[a-z-]+:|\/|#)/i.test(e)
   }
 
-  function J(e) {
+  function K(e) {
       return "." === e.charAt(0)
   }
-  q.Eval = function(e, t) {
-      T(e, this, G), "string" == typeof this.paths && (this.paths = [this.paths]), this.frames = t || [], this.importantScope = this.importantScope || []
-  }, q.Eval.prototype.enterCalc = function() {
+  z.Eval = function(e, t) {
+      G(e, this, J), "string" == typeof this.paths && (this.paths = [this.paths]), this.frames = t || [], this.importantScope = this.importantScope || []
+  }, z.Eval.prototype.enterCalc = function() {
       this.calcStack || (this.calcStack = []), this.calcStack.push(!0), this.inCalc = !0
-  }, q.Eval.prototype.exitCalc = function() {
+  }, z.Eval.prototype.exitCalc = function() {
       this.calcStack.pop(), this.calcStack.length || (this.inCalc = !1)
-  }, q.Eval.prototype.inParenthesis = function() {
+  }, z.Eval.prototype.inParenthesis = function() {
       this.parensStack || (this.parensStack = []), this.parensStack.push(!0)
-  }, q.Eval.prototype.outOfParenthesis = function() {
+  }, z.Eval.prototype.outOfParenthesis = function() {
       this.parensStack.pop()
-  }, q.Eval.prototype.inCalc = !1, q.Eval.prototype.mathOn = !0, q.Eval.prototype.isMathOn = function(e) {
+  }, z.Eval.prototype.inCalc = !1, z.Eval.prototype.mathOn = !0, z.Eval.prototype.isMathOn = function(e) {
       return !!this.mathOn && (!!("/" !== e || this.math === g.ALWAYS || this.parensStack && this.parensStack.length) && (!(this.math > g.PARENS_DIVISION) || this.parensStack && this.parensStack.length))
-  }, q.Eval.prototype.pathRequiresRewrite = function(e) {
-      return (this.rewriteUrls === b ? J : W)(e)
-  }, q.Eval.prototype.rewritePath = function(e, t) {
+  }, z.Eval.prototype.pathRequiresRewrite = function(e) {
+      return (this.rewriteUrls === b ? K : H)(e)
+  }, z.Eval.prototype.rewritePath = function(e, t) {
       var i;
-      return t = t || "", i = this.normalizePath(t + e), J(e) && W(t) && !1 === J(i) && (i = "./" + i), i
-  }, q.Eval.prototype.normalizePath = function(e) {
+      return t = t || "", i = this.normalizePath(t + e), K(e) && H(t) && !1 === K(i) && (i = "./" + i), i
+  }, z.Eval.prototype.normalizePath = function(e) {
       var t, i = e.split("/").reverse();
       for (e = []; 0 !== i.length;) switch (t = i.pop()) {
           case ".":
@@ -974,7 +977,7 @@
       }
       return e.join("/")
   };
-  var H = function e(t) {
+  var Z = function e(t) {
           return {
               _data: {},
               add: function(e, t) {
@@ -1017,10 +1020,10 @@
               this.value_ = this.error_ = null
           }
       },
-      K = function(e, t, i, n) {
+      X = function(e, t, i, n) {
           this.selectors = e, this.rules = t, this._lookups = {}, this._variables = null, this._properties = null, this.strictImports = i, this.copyVisibilityInfo(n), this.allowRoot = !0, this.setParent(this.selectors, this), this.setParent(this.rules, this)
       };
-  K.prototype = Object.assign(new u, {
+  X.prototype = Object.assign(new u, {
       type: "Ruleset",
       isRuleset: !0,
       isRulesetLike: function() {
@@ -1053,11 +1056,11 @@
               Q.reset()
           } else o = !0;
           var c, h, f = this.rules ? k(this.rules) : null,
-              p = new K(t, f, this.strictImports, this.visibilityInfo());
+              p = new X(t, f, this.strictImports, this.visibilityInfo());
           p.originalRuleset = this, p.root = this.root, p.firstRoot = this.firstRoot, p.allowImports = this.allowImports, this.debugInfo && (p.debugInfo = this.debugInfo), o || (f.length = 0), p.functionRegistry = function(e) {
               for (var t, i = 0, n = e.length; i !== n; ++i)
                   if (t = e[i].functionRegistry) return t;
-              return H
+              return Z
           }(e.frames).inherit();
           var v = e.frames;
           v.unshift(p);
@@ -1073,7 +1076,7 @@
           })), m.splice.apply(m, [r, 1].concat(f)), r += f.length - 1, p.resetCache());
           for (r = 0; c = m[r]; r++) c.evalFirst || (m[r] = c = c.eval ? c.eval(e) : c);
           for (r = 0; c = m[r]; r++)
-              if (c instanceof K && c.selectors && 1 === c.selectors.length && c.selectors[0] && c.selectors[0].isJustParentSelector()) {
+              if (c instanceof X && c.selectors && 1 === c.selectors.length && c.selectors[0] && c.selectors[0].isJustParentSelector()) {
                   m.splice(r--, 1);
                   for (a = 0; h = c.rules[a]; a++) h instanceof u && (h.copyVisibilityInfo(c.visibilityInfo()), h instanceof D && h.variable || m.splice(++r, 0, h))
               } if (v.shift(), d.shift(), e.mediaBlocks)
@@ -1086,7 +1089,7 @@
               for (t = 0; t < n.length; t++) "Import" === n[t].type && ((i = n[t].eval(e)) && (i.length || 0 === i.length) ? (n.splice.apply(n, [t, 1].concat(i)), t += i.length - 1) : n.splice(t, 1, i), this.resetCache())
       },
       makeImportant: function() {
-          return new K(this.selectors, this.rules.map((function(e) {
+          return new X(this.selectors, this.rules.map((function(e) {
               return e.makeImportant ? e.makeImportant() : e
           })), this.strictImports, this.visibilityInfo())
       },
@@ -1095,7 +1098,7 @@
       },
       matchCondition: function(e, t) {
           var i = this.selectors[this.selectors.length - 1];
-          return !!i.evaldCondition && !(i.condition && !i.condition.eval(new q.Eval(t, t.frames)))
+          return !!i.evaldCondition && !(i.condition && !i.condition.eval(new z.Eval(t, t.frames)))
       },
       resetCache: function() {
           this._rulesets = null, this._variables = null, this._properties = null, this._lookups = {}
@@ -1188,9 +1191,9 @@
               c = e.compress ? "" : Array(e.tabLevel).join("  "),
               h = 0,
               f = 0;
-          for (i = 0; s = this.rules[i]; i++) s instanceof U ? (f === i && f++, a.push(s)) : s.isCharset && s.isCharset() ? (a.splice(h, 0, s), h++, f++) : "Import" === s.type ? (a.splice(f, 0, s), f++) : a.push(s);
+          for (i = 0; s = this.rules[i]; i++) s instanceof T ? (f === i && f++, a.push(s)) : s.isCharset && s.isCharset() ? (a.splice(h, 0, s), h++, f++) : "Import" === s.type ? (a.splice(f, 0, s), f++) : a.push(s);
           if (a = [].concat(a), !this.root) {
-              (r = B(e, this, c)) && (t.add(r), t.add(c));
+              (r = q(e, this, c)) && (t.add(r), t.add(c));
               var p = this.paths,
                   v = p.length,
                   d = void 0;
@@ -1302,7 +1305,7 @@
           for (u = 0; u < c.length; u++) e.push(c[u])
       }
   });
-  var Z = function(e, t, i, n, r, s, o, a) {
+  var Y = function(e, t, i, n, r, s, o, a) {
       var l;
       if (this.name = e, this.value = t instanceof u ? t : t ? new j(t) : t, i) {
           for (Array.isArray(i) ? this.rules = i : (this.rules = [i], this.rules[0].selectors = new F([], null, null, n, r).createEmptySelectors()), l = 0; l < this.rules.length; l++) this.rules[l].allowImports = !0;
@@ -1310,7 +1313,7 @@
       }
       this._index = n, this._fileInfo = r, this.debugInfo = s, this.isRooted = o || !1, this.copyVisibilityInfo(a), this.allowRoot = !0
   };
-  Z.prototype = Object.assign(new u, {
+  Y.prototype = Object.assign(new u, {
       type: "AtRule",
       accept: function(e) {
           var t = this.value,
@@ -1331,16 +1334,16 @@
       eval: function(e) {
           var t, i, n = this.value,
               r = this.rules;
-          return t = e.mediaPath, i = e.mediaBlocks, e.mediaPath = [], e.mediaBlocks = [], n && (n = n.eval(e)), r && ((r = [r[0].eval(e)])[0].root = !0), e.mediaPath = t, e.mediaBlocks = i, new Z(this.name, n, r, this.getIndex(), this.fileInfo(), this.debugInfo, this.isRooted, this.visibilityInfo())
+          return t = e.mediaPath, i = e.mediaBlocks, e.mediaPath = [], e.mediaBlocks = [], n && (n = n.eval(e)), r && ((r = [r[0].eval(e)])[0].root = !0), e.mediaPath = t, e.mediaBlocks = i, new Y(this.name, n, r, this.getIndex(), this.fileInfo(), this.debugInfo, this.isRooted, this.visibilityInfo())
       },
       variable: function(e) {
-          if (this.rules) return K.prototype.variable.call(this.rules[0], e)
+          if (this.rules) return X.prototype.variable.call(this.rules[0], e)
       },
       find: function() {
-          if (this.rules) return K.prototype.find.apply(this.rules[0], arguments)
+          if (this.rules) return X.prototype.find.apply(this.rules[0], arguments)
       },
       rulesets: function() {
-          if (this.rules) return K.prototype.rulesets.apply(this.rules[0])
+          if (this.rules) return X.prototype.rulesets.apply(this.rules[0])
       },
       outputRuleset: function(e, t, i) {
           var n, r = i.length;
@@ -1357,10 +1360,10 @@
           e.tabLevel--
       }
   });
-  var X = function(e, t) {
+  var ee = function(e, t) {
       this.ruleset = e, this.frames = t, this.setParent(this.ruleset, this)
   };
-  X.prototype = Object.assign(new u, {
+  ee.prototype = Object.assign(new u, {
       type: "DetachedRuleset",
       evalFirst: !0,
       accept: function(e) {
@@ -1368,19 +1371,19 @@
       },
       eval: function(e) {
           var t = this.frames || k(e.frames);
-          return new X(this.ruleset, t)
+          return new ee(this.ruleset, t)
       },
       callEval: function(e) {
-          return this.ruleset.eval(this.frames ? new q.Eval(e, this.frames.concat(e.frames)) : e)
+          return this.ruleset.eval(this.frames ? new z.Eval(e, this.frames.concat(e.frames)) : e)
       }
   });
-  var Y = function(e, t, i) {
+  var te = function(e, t, i) {
       this.numerator = e ? k(e).sort() : [], this.denominator = t ? k(t).sort() : [], i ? this.backupUnit = i : e && e.length && (this.backupUnit = e[0])
   };
-  Y.prototype = Object.assign(new u, {
+  te.prototype = Object.assign(new u, {
       type: "Unit",
       clone: function() {
-          return new Y(k(this.numerator), k(this.denominator), this.backupUnit)
+          return new te(k(this.numerator), k(this.denominator), this.backupUnit)
       },
       genCSS: function(e, t) {
           var i = e && e.strictUnits;
@@ -1432,11 +1435,11 @@
               } this.numerator.sort(), this.denominator.sort()
       }
   });
-  var ee = function(e, t) {
+  var ie = function(e, t) {
       if (this.value = parseFloat(e), isNaN(this.value)) throw new Error("Dimension is not a number.");
-      this.unit = t && t instanceof Y ? t : new Y(t ? [t] : void 0), this.setParent(this.unit, this)
+      this.unit = t && t instanceof te ? t : new te(t ? [t] : void 0), this.setParent(this.unit, this)
   };
-  ee.prototype = Object.assign(new u, {
+  ie.prototype = Object.assign(new u, {
       type: "Dimension",
       accept: function(e) {
           this.unit = e.visit(this.unit)
@@ -1467,11 +1470,11 @@
               if (i = i.convertTo(this.unit.usedUnits()), e.strictUnits && i.unit.toString() !== r.toString()) throw new Error("Incompatible units. Change the units or use the unit function. Bad units: '" + r.toString() + "' and '" + i.unit.toString() + "'.");
               n = this._operate(e, t, this.value, i.value)
           } else "*" === t ? (r.numerator = r.numerator.concat(i.unit.numerator).sort(), r.denominator = r.denominator.concat(i.unit.denominator).sort(), r.cancel()) : "/" === t && (r.numerator = r.numerator.concat(i.unit.denominator).sort(), r.denominator = r.denominator.concat(i.unit.numerator).sort(), r.cancel());
-          return new ee(n, r)
+          return new ie(n, r)
       },
       compare: function(e) {
           var t, i;
-          if (e instanceof ee) {
+          if (e instanceof ie) {
               if (this.unit.isEmpty() || e.unit.isEmpty()) t = this, i = e;
               else if (t = this.unify(), i = e.unify(), 0 !== t.unit.compare(i.unit)) return;
               return u.numericCompare(t.value, i.value)
@@ -1495,14 +1498,14 @@
           for (i in s = function(e, t) {
                   return n.hasOwnProperty(e) ? (t ? o /= n[e] / n[r] : o *= n[e] / n[r], r) : e
               }, e) e.hasOwnProperty(i) && (r = e[i], n = a[i], l.map(s));
-          return l.cancel(), new ee(o, l)
+          return l.cancel(), new ie(o, l)
       }
   });
-  var te = g,
-      ie = function(e, t, i) {
+  var ne = g,
+      re = function(e, t, i) {
           this.op = e.trim(), this.operands = t, this.isSpaced = i
       };
-  ie.prototype = Object.assign(new u, {
+  re.prototype = Object.assign(new u, {
       type: "Operation",
       accept: function(e) {
           this.operands = e.visitArray(this.operands)
@@ -1511,8 +1514,8 @@
           var t, i = this.operands[0].eval(e),
               n = this.operands[1].eval(e);
           if (e.isMathOn(this.op)) {
-              if (t = "./" === this.op ? "/" : this.op, i instanceof ee && n instanceof c && (i = i.toColor()), n instanceof ee && i instanceof c && (n = n.toColor()), !i.operate || !n.operate) {
-                  if ((i instanceof ie || n instanceof ie) && "/" === i.op && e.math === te.PARENS_DIVISION) return new ie(this.op, [i, n], this.isSpaced);
+              if (t = "./" === this.op ? "/" : this.op, i instanceof ie && n instanceof c && (i = i.toColor()), n instanceof ie && i instanceof c && (n = n.toColor()), !i.operate || !n.operate) {
+                  if ((i instanceof re || n instanceof re) && "/" === i.op && e.math === ne.PARENS_DIVISION) return new re(this.op, [i, n], this.isSpaced);
                   throw {
                       type: "Operation",
                       message: "Operation on an invalid type"
@@ -1520,16 +1523,16 @@
               }
               return i.operate(e, t, n)
           }
-          return new ie(this.op, [i, n], this.isSpaced)
+          return new re(this.op, [i, n], this.isSpaced)
       },
       genCSS: function(e, t) {
           this.operands[0].genCSS(e, t), this.isSpaced && t.add(" "), t.add(this.op), this.isSpaced && t.add(" "), this.operands[1].genCSS(e, t)
       }
   });
-  var ne = function(e, t) {
+  var se = function(e, t) {
       if (this.value = e, this.noSpacing = t, !e) throw new Error("Expression requires an array parameter")
   };
-  ne.prototype = Object.assign(new u, {
+  se.prototype = Object.assign(new u, {
       type: "Expression",
       accept: function(e) {
           this.value = e.visitArray(this.value)
@@ -1538,20 +1541,20 @@
           var t, i = e.isMathOn(),
               n = this.parens,
               r = !1;
-          return n && e.inParenthesis(), this.value.length > 1 ? t = new ne(this.value.map((function(t) {
+          return n && e.inParenthesis(), this.value.length > 1 ? t = new se(this.value.map((function(t) {
               return t.eval ? t.eval(e) : t
-          })), this.noSpacing) : 1 === this.value.length ? (!this.value[0].parens || this.value[0].parensInOp || e.inCalc || (r = !0), t = this.value[0].eval(e)) : t = this, n && e.outOfParenthesis(), !this.parens || !this.parensInOp || i || r || t instanceof ee || (t = new p(t)), t
+          })), this.noSpacing) : 1 === this.value.length ? (!this.value[0].parens || this.value[0].parensInOp || e.inCalc || (r = !0), t = this.value[0].eval(e)) : t = this, n && e.outOfParenthesis(), !this.parens || !this.parensInOp || i || r || t instanceof ie || (t = new p(t)), t
       },
       genCSS: function(e, t) {
           for (var i = 0; i < this.value.length; i++) this.value[i].genCSS(e, t), !this.noSpacing && i + 1 < this.value.length && t.add(" ")
       },
       throwAwayComments: function() {
           this.value = this.value.filter((function(e) {
-              return !(e instanceof U)
+              return !(e instanceof T)
           }))
       }
   });
-  var re = function() {
+  var oe = function() {
           function e(e, t, i, n) {
               this.name = e.toLowerCase(), this.index = i, this.context = t, this.currentFileInfo = n, this.func = t.frames[0].functionRegistry.get(this.name)
           }
@@ -1570,7 +1573,7 @@
               return e = e.filter(n).map((function(e) {
                   if ("Expression" === e.type) {
                       var t = e.value.filter(n);
-                      return 1 === t.length ? e.parens && "/" === t[0].op ? e : t[0] : new ne(t)
+                      return 1 === t.length ? e.parens && "/" === t[0].op ? e : t[0] : new se(t)
                   }
                   return e
               })), !1 === i ? this.func.apply(this, function(e, t, i) {
@@ -1580,10 +1583,10 @@
               }([this.context], e)) : this.func.apply(this, e)
           }, e
       }(),
-      se = function(e, t, i, n) {
+      ae = function(e, t, i, n) {
           this.name = e, this.args = t, this.calc = "calc" === e, this._index = i, this._fileInfo = n
       };
-  se.prototype = Object.assign(new u, {
+  ae.prototype = Object.assign(new u, {
       type: "Call",
       accept: function(e) {
           this.args && (this.args = e.visitArray(this.args))
@@ -1595,7 +1598,7 @@
           var n, r = function() {
                   (t.calc || e.inCalc) && e.exitCalc(), e.mathOn = i
               },
-              s = new re(this.name, e, this.getIndex(), this.fileInfo());
+              s = new oe(this.name, e, this.getIndex(), this.fileInfo());
           if (s.isValid()) try {
               n = s.call(this.args), r()
           } catch (e) {
@@ -1613,7 +1616,7 @@
           var o = this.args.map((function(t) {
               return t.eval(e)
           }));
-          return r(), new se(this.name, o, this.getIndex(), this.fileInfo())
+          return r(), new ae(this.name, o, this.getIndex(), this.fileInfo())
       },
       genCSS: function(e, t) {
           t.add(this.name + "(", this.fileInfo(), this.getIndex());
@@ -1621,14 +1624,14 @@
           t.add(")")
       }
   });
-  var oe = function(e, t, i) {
+  var le = function(e, t, i) {
       this.name = e, this._index = t, this._fileInfo = i
   };
-  oe.prototype = Object.assign(new u, {
+  le.prototype = Object.assign(new u, {
       type: "Variable",
       eval: function(e) {
           var t, i = this.name;
-          if (0 === i.indexOf("@@") && (i = "@" + new oe(i.slice(1), this.getIndex(), this.fileInfo()).eval(e).value), this.evaluating) throw {
+          if (0 === i.indexOf("@@") && (i = "@" + new le(i.slice(1), this.getIndex(), this.fileInfo()).eval(e).value), this.evaluating) throw {
               type: "Name",
               message: "Recursive variable definition for " + i,
               filename: this.fileInfo().filename,
@@ -1638,7 +1641,7 @@
                   var n = t.variable(i);
                   if (n) {
                       if (n.important) e.importantScope[e.importantScope.length - 1].important = n.important;
-                      return e.inCalc ? new se("_SELF", [n.value]).eval(e) : n.value.eval(e)
+                      return e.inCalc ? new ae("_SELF", [n.value]).eval(e) : n.value.eval(e)
                   }
               }))) return this.evaluating = !1, t;
           throw {
@@ -1654,10 +1657,10 @@
           return null
       }
   });
-  var ae = function(e, t, i) {
+  var ue = function(e, t, i) {
       this.name = e, this._index = t, this._fileInfo = i
   };
-  ae.prototype = Object.assign(new u, {
+  ue.prototype = Object.assign(new u, {
       type: "Property",
       eval: function(e) {
           var t, i = this.name,
@@ -1689,26 +1692,26 @@
           return null
       }
   });
-  var le = function(e, t, i) {
-      this.key = e, this.op = t, this.value = i
+  var ce = function(e, t, i, n) {
+      this.key = e, this.op = t, this.value = i, this.cif = n
   };
-  le.prototype = Object.assign(new u, {
+  ce.prototype = Object.assign(new u, {
       type: "Attribute",
       eval: function(e) {
-          return new le(this.key.eval ? this.key.eval(e) : this.key, this.op, this.value && this.value.eval ? this.value.eval(e) : this.value)
+          return new ce(this.key.eval ? this.key.eval(e) : this.key, this.op, this.value && this.value.eval ? this.value.eval(e) : this.value, this.cif)
       },
       genCSS: function(e, t) {
           t.add(this.toCSS(e))
       },
       toCSS: function(e) {
           var t = this.key.toCSS ? this.key.toCSS(e) : this.key;
-          return this.op && (t += this.op, t += this.value.toCSS ? this.value.toCSS(e) : this.value), "[" + t + "]"
+          return this.op && (t += this.op, t += this.value.toCSS ? this.value.toCSS(e) : this.value), this.cif && (t = t + " " + this.cif), "[" + t + "]"
       }
   });
-  var ue = function(e, t, i, n, r) {
+  var he = function(e, t, i, n, r) {
       this.escaped = null == i || i, this.value = t || "", this.quote = e.charAt(0), this._index = n, this._fileInfo = r, this.variableRegex = /@\{([\w-]+)\}/g, this.propRegex = /\$\{([\w-]+)\}/g, this.allowRoot = i
   };
-  ue.prototype = Object.assign(new u, {
+  he.prototype = Object.assign(new u, {
       type: "Quoted",
       genCSS: function(e, t) {
           this.escaped || t.add(this.quote, this.fileInfo(), this.getIndex()), t.add(this.value), this.escaped || t.add(this.quote)
@@ -1728,21 +1731,21 @@
               return n
           }
           return i = n(i, this.variableRegex, (function(i, n) {
-              var r = new oe("@" + n, t.getIndex(), t.fileInfo()).eval(e, !0);
-              return r instanceof ue ? r.value : r.toCSS()
+              var r = new le("@" + n, t.getIndex(), t.fileInfo()).eval(e, !0);
+              return r instanceof he ? r.value : r.toCSS()
           })), i = n(i, this.propRegex, (function(i, n) {
-              var r = new ae("$" + n, t.getIndex(), t.fileInfo()).eval(e, !0);
-              return r instanceof ue ? r.value : r.toCSS()
-          })), new ue(this.quote + i + this.quote, i, this.escaped, this.getIndex(), this.fileInfo())
+              var r = new ue("$" + n, t.getIndex(), t.fileInfo()).eval(e, !0);
+              return r instanceof he ? r.value : r.toCSS()
+          })), new he(this.quote + i + this.quote, i, this.escaped, this.getIndex(), this.fileInfo())
       },
       compare: function(e) {
           return "Quoted" !== e.type || this.escaped || e.escaped ? e.toCSS && this.toCSS() === e.toCSS() ? 0 : void 0 : u.numericCompare(this.value, e.value)
       }
   });
-  var ce = function(e, t, i, n) {
+  var fe = function(e, t, i, n) {
       this.value = e, this._index = t, this._fileInfo = i, this.isEvald = n
   };
-  ce.prototype = Object.assign(new u, {
+  fe.prototype = Object.assign(new u, {
       type: "Url",
       accept: function(e) {
           this.value = e.visit(this.value)
@@ -1757,15 +1760,15 @@
               }))), i.value = e.rewritePath(i.value, t)) : i.value = e.normalizePath(i.value), e.urlArgs && !i.value.match(/^\s*data:/))) {
               var n = (-1 === i.value.indexOf("?") ? "?" : "&") + e.urlArgs; - 1 !== i.value.indexOf("#") ? i.value = i.value.replace("#", n + "#") : i.value += n
           }
-          return new ce(i, this.getIndex(), this.fileInfo(), !0)
+          return new fe(i, this.getIndex(), this.fileInfo(), !0)
       }
   });
-  var he = function(e, t, i, n, r) {
+  var pe = function(e, t, i, n, r) {
       this._index = i, this._fileInfo = n;
       var s = new F([], null, null, this._index, this._fileInfo).createEmptySelectors();
-      this.features = new $(t), this.rules = [new K(s, e)], this.rules[0].allowImports = !0, this.copyVisibilityInfo(r), this.allowRoot = !0, this.setParent(s, this), this.setParent(this.features, this), this.setParent(this.rules, this)
+      this.features = new $(t), this.rules = [new X(s, e)], this.rules[0].allowImports = !0, this.copyVisibilityInfo(r), this.allowRoot = !0, this.setParent(s, this), this.setParent(this.features, this), this.setParent(this.rules, this)
   };
-  he.prototype = Object.assign(new Z, {
+  pe.prototype = Object.assign(new Y, {
       type: "Media",
       isRulesetLike: function() {
           return !0
@@ -1778,14 +1781,14 @@
       },
       eval: function(e) {
           e.mediaBlocks || (e.mediaBlocks = [], e.mediaPath = []);
-          var t = new he(null, [], this._index, this._fileInfo, this.visibilityInfo());
+          var t = new pe(null, [], this._index, this._fileInfo, this.visibilityInfo());
           return this.debugInfo && (this.rules[0].debugInfo = this.debugInfo, t.debugInfo = this.debugInfo), t.features = this.features.eval(e), e.mediaPath.push(t), e.mediaBlocks.push(t), this.rules[0].functionRegistry = e.frames[0].functionRegistry.inherit(), e.frames.unshift(this.rules[0]), t.rules = [this.rules[0].eval(e)], e.frames.shift(), e.mediaPath.pop(), 0 === e.mediaPath.length ? t.evalTop(e) : t.evalNested(e)
       },
       evalTop: function(e) {
           var t = this;
           if (e.mediaBlocks.length > 1) {
               var i = new F([], null, null, this.getIndex(), this.fileInfo()).createEmptySelectors();
-              (t = new K(i, e.mediaBlocks)).multiMedia = !0, t.copyVisibilityInfo(this.visibilityInfo()), this.setParent(t, this)
+              (t = new X(i, e.mediaBlocks)).multiMedia = !0, t.copyVisibilityInfo(this.visibilityInfo()), this.setParent(t, this)
           }
           return delete e.mediaBlocks, delete e.mediaPath, t
       },
@@ -1796,8 +1799,8 @@
               for (e = e.map((function(e) {
                       return e.toCSS ? e : new j(e)
                   })), t = e.length - 1; t > 0; t--) e.splice(t, 0, new j("and"));
-              return new ne(e)
-          }))), this.setParent(this.features, this), new K([], [])
+              return new se(e)
+          }))), this.setParent(this.features, this), new X([], [])
       },
       permute: function(e) {
           if (0 === e.length) return [];
@@ -1807,10 +1810,10 @@
           return t
       },
       bubbleSelectors: function(e) {
-          e && (this.rules = [new K(k(e), [this.rules[0]])], this.setParent(this.rules, this))
+          e && (this.rules = [new X(k(e), [this.rules[0]])], this.setParent(this.rules, this))
       }
   });
-  var fe = function(e, t, i, n, r, s) {
+  var ve = function(e, t, i, n, r, s) {
       if (this.options = i, this._index = n, this._fileInfo = r, this.path = e, this.features = t, this.allowRoot = !0, void 0 !== this.options.less || this.options.inline) this.css = !this.options.less || this.options.inline;
       else {
           var o = this.getPath();
@@ -1818,7 +1821,7 @@
       }
       this.copyVisibilityInfo(s), this.setParent(this.features, this), this.setParent(this.path, this)
   };
-  fe.prototype = Object.assign(new u, {
+  ve.prototype = Object.assign(new u, {
       type: "Import",
       accept: function(e) {
           this.features && (this.features = e.visit(this.features)), this.path = e.visit(this.path), this.options.isPlugin || this.options.inline || !this.root || (this.root = e.visit(this.root))
@@ -1827,20 +1830,20 @@
           this.css && void 0 === this.path._fileInfo.reference && (t.add("@import ", this._fileInfo, this._index), this.path.genCSS(e, t), this.features && (t.add(" "), this.features.genCSS(e, t)), t.add(";"))
       },
       getPath: function() {
-          return this.path instanceof ce ? this.path.value.value : this.path.value
+          return this.path instanceof fe ? this.path.value.value : this.path.value
       },
       isVariableImport: function() {
           var e = this.path;
-          return e instanceof ce && (e = e.value), !(e instanceof ue) || e.containsVariables()
+          return e instanceof fe && (e = e.value), !(e instanceof he) || e.containsVariables()
       },
       evalForImport: function(e) {
           var t = this.path;
-          return t instanceof ce && (t = t.value), new fe(t.eval(e), this.features, this.options, this._index, this._fileInfo, this.visibilityInfo())
+          return t instanceof fe && (t = t.value), new ve(t.eval(e), this.features, this.options, this._index, this._fileInfo, this.visibilityInfo())
       },
       evalPath: function(e) {
           var t = this.path.eval(e),
               i = this._fileInfo;
-          if (!(t instanceof ce)) {
+          if (!(t instanceof fe)) {
               var n = t.value;
               i && n && e.pathRequiresRewrite(n) ? t.value = e.rewritePath(n, i.rootpath) : t.value = e.normalizePath(t.value)
           }
@@ -1868,18 +1871,18 @@
                   filename: this.importedFilename,
                   reference: this.path._fileInfo && this.path._fileInfo.reference
               }, !0, !0);
-              return this.features ? new he([r], this.features.value) : [r]
+              return this.features ? new pe([r], this.features.value) : [r]
           }
           if (this.css) {
-              var s = new fe(this.evalPath(e), n, this.options, this._index);
+              var s = new ve(this.evalPath(e), n, this.options, this._index);
               if (!s.css && this.error) throw this.error;
               return s
           }
-          return this.root ? ((t = new K(null, k(this.root.rules))).evalImports(e), this.features ? new he(t.rules, this.features.value) : t.rules) : []
+          return this.root ? ((t = new X(null, k(this.root.rules))).evalImports(e), this.features ? new pe(t.rules, this.features.value) : t.rules) : []
       }
   });
-  var pe = function() {};
-  pe.prototype = Object.assign(new u, {
+  var de = function() {};
+  de.prototype = Object.assign(new u, {
       evaluateJavaScript: function(e, t) {
           var i, n = this,
               r = {};
@@ -1889,7 +1892,7 @@
               index: this.getIndex()
           };
           e = e.replace(/@\{([\w-]+)\}/g, (function(e, i) {
-              return n.jsify(new oe("@" + i, n.getIndex(), n.fileInfo()).eval(t))
+              return n.jsify(new le("@" + i, n.getIndex(), n.fileInfo()).eval(t))
           }));
           try {
               e = new Function("return (" + e + ")")
@@ -1924,36 +1927,36 @@
           })).join(", ") + "]" : e.toCSS()
       }
   });
-  var ve = function(e, t, i, n) {
+  var me = function(e, t, i, n) {
       this.escaped = t, this.expression = e, this._index = i, this._fileInfo = n
   };
-  ve.prototype = Object.assign(new pe, {
+  me.prototype = Object.assign(new de, {
       type: "JavaScript",
       eval: function(e) {
           var t = this.evaluateJavaScript(this.expression, e),
               i = typeof t;
-          return "number" !== i || isNaN(t) ? "string" === i ? new ue('"' + t + '"', t, this.escaped, this._index) : Array.isArray(t) ? new j(t.join(", ")) : new j(t) : new ee(t)
+          return "number" !== i || isNaN(t) ? "string" === i ? new he('"' + t + '"', t, this.escaped, this._index) : Array.isArray(t) ? new j(t.join(", ")) : new j(t) : new ie(t)
       }
   });
-  var de = function(e, t) {
+  var ge = function(e, t) {
       this.key = e, this.value = t
   };
-  de.prototype = Object.assign(new u, {
+  ge.prototype = Object.assign(new u, {
       type: "Assignment",
       accept: function(e) {
           this.value = e.visit(this.value)
       },
       eval: function(e) {
-          return this.value.eval ? new de(this.key, this.value.eval(e)) : this
+          return this.value.eval ? new ge(this.key, this.value.eval(e)) : this
       },
       genCSS: function(e, t) {
           t.add(this.key + "="), this.value.genCSS ? this.value.genCSS(e, t) : t.add(this.value)
       }
   });
-  var me = function(e, t, i, n, r) {
+  var ye = function(e, t, i, n, r) {
       this.op = e.trim(), this.lvalue = t, this.rvalue = i, this._index = n, this.negate = r
   };
-  me.prototype = Object.assign(new u, {
+  ye.prototype = Object.assign(new u, {
       type: "Condition",
       accept: function(e) {
           this.lvalue = e.visit(this.lvalue), this.rvalue = e.visit(this.rvalue)
@@ -1981,26 +1984,26 @@
           return this.negate ? !t : t
       }
   });
-  var ge = function(e) {
+  var be = function(e) {
       this.value = e
   };
-  ge.prototype = Object.assign(new u, {
+  be.prototype = Object.assign(new u, {
       type: "UnicodeDescriptor"
   });
-  var ye = function(e) {
+  var we = function(e) {
       this.value = e
   };
-  ye.prototype = Object.assign(new u, {
+  we.prototype = Object.assign(new u, {
       type: "Negative",
       genCSS: function(e, t) {
           t.add("-"), this.value.genCSS(e, t)
       },
       eval: function(e) {
-          return e.isMathOn() ? new ie("*", [new ee(-1), this.value]).eval(e) : new ye(this.value.eval(e))
+          return e.isMathOn() ? new re("*", [new ie(-1), this.value]).eval(e) : new we(this.value.eval(e))
       }
   });
-  var be = function(e, t, i, n, r) {
-      switch (this.selector = e, this.option = t, this.object_id = be.next_id++, this.parent_ids = [this.object_id], this._index = i, this._fileInfo = n, this.copyVisibilityInfo(r), this.allowRoot = !0, t) {
+  var xe = function(e, t, i, n, r) {
+      switch (this.selector = e, this.option = t, this.object_id = xe.next_id++, this.parent_ids = [this.object_id], this._index = i, this._fileInfo = n, this.copyVisibilityInfo(r), this.allowRoot = !0, t) {
           case "all":
               this.allowBefore = !0, this.allowAfter = !0;
               break;
@@ -2009,64 +2012,64 @@
       }
       this.setParent(this.selector, this)
   };
-  be.prototype = Object.assign(new u, {
+  xe.prototype = Object.assign(new u, {
       type: "Extend",
       accept: function(e) {
           this.selector = e.visit(this.selector)
       },
       eval: function(e) {
-          return new be(this.selector.eval(e), this.option, this.getIndex(), this.fileInfo(), this.visibilityInfo())
+          return new xe(this.selector.eval(e), this.option, this.getIndex(), this.fileInfo(), this.visibilityInfo())
       },
       clone: function(e) {
-          return new be(this.selector, this.option, this.getIndex(), this.fileInfo(), this.visibilityInfo())
+          return new xe(this.selector, this.option, this.getIndex(), this.fileInfo(), this.visibilityInfo())
       },
       findSelfSelectors: function(e) {
           var t, i, n = [];
           for (t = 0; t < e.length; t++) i = e[t].elements, t > 0 && i.length && "" === i[0].combinator.value && (i[0].combinator.value = " "), n = n.concat(e[t].elements);
           this.selfSelectors = [new F(n)], this.selfSelectors[0].copyVisibilityInfo(this.visibilityInfo())
       }
-  }), be.next_id = 0;
-  var we = function(e, t, i) {
+  }), xe.next_id = 0;
+  var Se = function(e, t, i) {
       this.variable = e, this._index = t, this._fileInfo = i, this.allowRoot = !0
   };
-  we.prototype = Object.assign(new u, {
+  Se.prototype = Object.assign(new u, {
       type: "VariableCall",
       eval: function(e) {
-          var t, i = new oe(this.variable, this.getIndex(), this.fileInfo()).eval(e),
+          var t, i = new le(this.variable, this.getIndex(), this.fileInfo()).eval(e),
               n = new O({
                   message: "Could not evaluate variable call " + this.variable
               });
           if (!i.ruleset) {
               if (i.rules) t = i;
-              else if (Array.isArray(i)) t = new K("", i);
+              else if (Array.isArray(i)) t = new X("", i);
               else {
                   if (!Array.isArray(i.value)) throw n;
-                  t = new K("", i.value)
+                  t = new X("", i.value)
               }
-              i = new X(t)
+              i = new ee(t)
           }
           if (i.ruleset) return i.callEval(e);
           throw n
       }
   });
-  var xe = function(e, t, i, n) {
+  var Ie = function(e, t, i, n) {
       this.value = e, this.lookups = t, this._index = i, this._fileInfo = n
   };
-  xe.prototype = Object.assign(new u, {
+  Ie.prototype = Object.assign(new u, {
       type: "NamespaceValue",
       eval: function(e) {
           var t, i, n = this.value.eval(e);
           for (t = 0; t < this.lookups.length; t++) {
-              if (i = this.lookups[t], Array.isArray(n) && (n = new K([new F], n)), "" === i) n = n.lastDeclaration();
+              if (i = this.lookups[t], Array.isArray(n) && (n = new X([new F], n)), "" === i) n = n.lastDeclaration();
               else if ("@" === i.charAt(0)) {
-                  if ("@" === i.charAt(1) && (i = "@" + new oe(i.substr(1)).eval(e).value), n.variables && (n = n.variable(i)), !n) throw {
+                  if ("@" === i.charAt(1) && (i = "@" + new le(i.substr(1)).eval(e).value), n.variables && (n = n.variable(i)), !n) throw {
                       type: "Name",
                       message: "variable " + i + " not found",
                       filename: this.fileInfo().filename,
                       index: this.getIndex()
                   }
               } else {
-                  if (i = "$@" === i.substring(0, 2) ? "$" + new oe(i.substr(1)).eval(e).value : "$" === i.charAt(0) ? i : "$" + i, n.properties && (n = n.property(i)), !n) throw {
+                  if (i = "$@" === i.substring(0, 2) ? "$" + new le(i.substr(1)).eval(e).value : "$" === i.charAt(0) ? i : "$" + i, n.properties && (n = n.property(i)), !n) throw {
                       type: "Name",
                       message: 'property "' + i.substr(1) + '" not found',
                       filename: this.fileInfo().filename,
@@ -2079,24 +2082,24 @@
           return n
       }
   });
-  var Se = function(e, t, i, n, r, s, o) {
+  var Ce = function(e, t, i, n, r, s, o) {
       this.name = e || "anonymous mixin", this.selectors = [new F([new m(null, e, !1, this._index, this._fileInfo)])], this.params = t, this.condition = n, this.variadic = r, this.arity = t.length, this.rules = i, this._lookups = {};
       var a = [];
       this.required = t.reduce((function(e, t) {
           return !t.name || t.name && !t.value ? e + 1 : (a.push(t.name), e)
       }), 0), this.optionalParameters = a, this.frames = s, this.copyVisibilityInfo(o), this.allowRoot = !0
   };
-  Se.prototype = Object.assign(new K, {
+  Ce.prototype = Object.assign(new X, {
       type: "MixinDefinition",
       evalFirst: !0,
       accept: function(e) {
           this.params && this.params.length && (this.params = e.visitArray(this.params)), this.rules = e.visitArray(this.rules), this.condition && (this.condition = e.visit(this.condition))
       },
       evalParams: function(e, t, i, n) {
-          var r, s, o, a, l, u, c, h, f = new K(null, null),
+          var r, s, o, a, l, u, c, h, f = new X(null, null),
               p = k(this.params),
               v = 0;
-          if (t.frames && t.frames[0] && t.frames[0].functionRegistry && (f.functionRegistry = t.frames[0].functionRegistry.inherit()), t = new q.Eval(t, [f].concat(t.frames)), i)
+          if (t.frames && t.frames[0] && t.frames[0].functionRegistry && (f.functionRegistry = t.frames[0].functionRegistry.inherit()), t = new z.Eval(t, [f].concat(t.frames)), i)
               for (v = (i = k(i)).length, o = 0; o < v; o++)
                   if (u = (s = i[o]) && s.name) {
                       for (c = !1, a = 0; a < p.length; a++)
@@ -2116,9 +2119,9 @@
                   if (s = i && i[h], u = p[o].name)
                       if (p[o].variadic) {
                           for (r = [], a = h; a < v; a++) r.push(i[a].value.eval(e));
-                          f.prependRule(new D(u, new ne(r).eval(e)))
+                          f.prependRule(new D(u, new se(r).eval(e)))
                       } else {
-                          if (l = s && s.value) l = Array.isArray(l) ? new X(new K("", l)) : l.eval(e);
+                          if (l = s && s.value) l = Array.isArray(l) ? new ee(new X("", l)) : l.eval(e);
                           else {
                               if (!p[o].value) throw {
                                   type: "Runtime",
@@ -2136,19 +2139,19 @@
           var e = this.rules ? this.rules.map((function(e) {
               return e.makeImportant ? e.makeImportant(!0) : e
           })) : this.rules;
-          return new Se(this.name, this.params, e, this.condition, this.variadic, this.frames)
+          return new Ce(this.name, this.params, e, this.condition, this.variadic, this.frames)
       },
       eval: function(e) {
-          return new Se(this.name, this.params, this.rules, this.condition, this.variadic, this.frames || k(e.frames))
+          return new Ce(this.name, this.params, this.rules, this.condition, this.variadic, this.frames || k(e.frames))
       },
       evalCall: function(e, t, i) {
           var n, r, s = [],
               o = this.frames ? this.frames.concat(e.frames) : e.frames,
-              a = this.evalParams(e, new q.Eval(e, o), t, s);
-          return a.prependRule(new D("@arguments", new ne(s).eval(e))), n = k(this.rules), (r = new K(null, n)).originalRuleset = this, r = r.eval(new q.Eval(e, [this, a].concat(o))), i && (r = r.makeImportant()), r
+              a = this.evalParams(e, new z.Eval(e, o), t, s);
+          return a.prependRule(new D("@arguments", new se(s).eval(e))), n = k(this.rules), (r = new X(null, n)).originalRuleset = this, r = r.eval(new z.Eval(e, [this, a].concat(o))), i && (r = r.makeImportant()), r
       },
       matchCondition: function(e, t) {
-          return !(this.condition && !this.condition.eval(new q.Eval(t, [this.evalParams(t, new q.Eval(t, this.frames ? this.frames.concat(t.frames) : t.frames), e, [])].concat(this.frames || []).concat(t.frames))))
+          return !(this.condition && !this.condition.eval(new z.Eval(t, [this.evalParams(t, new z.Eval(t, this.frames ? this.frames.concat(t.frames) : t.frames), e, [])].concat(this.frames || []).concat(t.frames))))
       },
       matchArgs: function(e, t) {
           var i, n = e && e.length || 0,
@@ -2168,10 +2171,10 @@
           return !0
       }
   });
-  var Ie = function(e, t, i, n, r) {
+  var ke = function(e, t, i, n, r) {
       this.selector = new F(e), this.arguments = t || [], this._index = i, this._fileInfo = n, this.important = r, this.allowRoot = !0, this.setParent(this.selector, this)
   };
-  Ie.prototype = Object.assign(new u, {
+  ke.prototype = Object.assign(new u, {
       type: "MixinCall",
       accept: function(e) {
           this.selector && (this.selector = e.visit(this.selector)), this.arguments.length && (this.arguments = e.visitArray(this.arguments))
@@ -2206,7 +2209,7 @@
               if ((t = e.frames[o].find(this.selector, null, d)).length > 0) {
                   for (c = !0, a = 0; a < t.length; a++) {
                       for (i = t[a].rule, n = t[a].path, u = !1, l = 0; l < e.frames.length; l++)
-                          if (!(i instanceof Se) && i === (e.frames[l].originalRuleset || e.frames[l])) {
+                          if (!(i instanceof Ce) && i === (e.frames[l].originalRuleset || e.frames[l])) {
                               u = !0;
                               break
                           } u || i.matchArgs(m, e) && (-1 !== (h = {
@@ -2224,7 +2227,7 @@
                   };
                   for (a = 0; a < b.length; a++)
                       if (0 === (h = b[a].group) || h === f) try {
-                          (i = b[a].mixin) instanceof Se || (v = i.originalRuleset || i, (i = new Se("", [], i.rules, null, !1, null, v.visibilityInfo())).originalRuleset = v);
+                          (i = b[a].mixin) instanceof Ce || (v = i.originalRuleset || i, (i = new Ce("", [], i.rules, null, !1, null, v.visibilityInfo())).originalRuleset = v);
                           var S = i.evalCall(e, m, this.important).rules;
                           this._setVisibilityToReplacement(S), Array.prototype.push.apply(g, S)
                       } catch (e) {
@@ -2260,47 +2263,47 @@
           })).join(", ") : "") + ")"
       }
   });
-  var Ce = {
+  var _e = {
           Node: u,
           Color: c,
-          AtRule: Z,
-          DetachedRuleset: X,
-          Operation: ie,
-          Dimension: ee,
-          Unit: Y,
+          AtRule: Y,
+          DetachedRuleset: ee,
+          Operation: re,
+          Dimension: ie,
+          Unit: te,
           Keyword: L,
-          Variable: oe,
-          Property: ae,
-          Ruleset: K,
+          Variable: le,
+          Property: ue,
+          Ruleset: X,
           Element: m,
-          Attribute: le,
+          Attribute: ce,
           Combinator: d,
           Selector: F,
-          Quoted: ue,
-          Expression: ne,
+          Quoted: he,
+          Expression: se,
           Declaration: D,
-          Call: se,
-          URL: ce,
-          Import: fe,
-          Comment: U,
+          Call: ae,
+          URL: fe,
+          Import: ve,
+          Comment: T,
           Anonymous: j,
           Value: $,
-          JavaScript: ve,
-          Assignment: de,
-          Condition: me,
+          JavaScript: me,
+          Assignment: ge,
+          Condition: ye,
           Paren: p,
-          Media: he,
-          UnicodeDescriptor: ge,
-          Negative: ye,
-          Extend: be,
-          VariableCall: we,
-          NamespaceValue: xe,
+          Media: pe,
+          UnicodeDescriptor: be,
+          Negative: we,
+          Extend: xe,
+          VariableCall: Se,
+          NamespaceValue: Ie,
           mixin: {
-              Call: Ie,
-              Definition: Se
+              Call: ke,
+              Definition: Ce
           }
       },
-      ke = function() {
+      Ae = function() {
           function e() {}
           return e.prototype.getPath = function(e) {
               var t = e.lastIndexOf("?");
@@ -2342,7 +2345,7 @@
               return o.hostPart = s[1], o.directories = l, o.rawPath = (s[1] || "") + a.join("/"), o.path = (s[1] || "") + l.join("/"), o.filename = s[4], o.fileUrl = o.path + (s[4] || ""), o.url = o.fileUrl + (s[5] || ""), o
           }, e
       }(),
-      _e = function() {
+      Me = function() {
           function e() {
               this.require = function() {
                   return null
@@ -2365,7 +2368,7 @@
                   exports: {},
                   pluginManager: l,
                   fileInfo: r
-              }, s = H.create();
+              }, s = Z.create();
               try {
                   new Function("module", "require", "registerPlugin", "functions", "tree", "less", "fileInfo", e)(a, this.require(u), (function(e) {
                       o = e
@@ -2413,17 +2416,17 @@
               }
           }, e
       }(),
-      Ae = {
+      Ee = {
           visitDeeper: !0
       },
-      Me = !1;
+      Pe = !1;
 
-  function Ee(e) {
+  function Re(e) {
       return e
   }
-  var Pe = function() {
+  var Oe = function() {
           function e(e) {
-              this._implementation = e, this._visitInCache = {}, this._visitOutCache = {}, Me || (! function e(t, i) {
+              this._implementation = e, this._visitInCache = {}, this._visitOutCache = {}, Pe || (! function e(t, i) {
                   var n, r;
                   for (n in t) switch (typeof(r = t[n])) {
                       case "function":
@@ -2433,7 +2436,7 @@
                           i = e(r, i)
                   }
                   return i
-              }(Ce, 1), Me = !0)
+              }(_e, 1), Pe = !0)
           }
           return e.prototype.visit = function(e) {
               if (!e) return e;
@@ -2442,8 +2445,8 @@
               var i, n = this._implementation,
                   r = this._visitInCache[t],
                   s = this._visitOutCache[t],
-                  o = Ae;
-              if (o.visitDeeper = !0, r || (r = n[i = "visit" + e.type] || Ee, s = n[i + "Out"] || Ee, this._visitInCache[t] = r, this._visitOutCache[t] = s), r !== Ee) {
+                  o = Ee;
+              if (o.visitDeeper = !0, r || (r = n[i = "visit" + e.type] || Re, s = n[i + "Out"] || Re, this._visitInCache[t] = r, this._visitOutCache[t] = s), r !== Re) {
                   var a = r.call(n, e, o);
                   e && n.isReplacing && (e = a)
               }
@@ -2451,7 +2454,7 @@
                   if (e.length)
                       for (var l = 0, u = e.length; l < u; l++) e[l].accept && e[l].accept(this);
                   else e.accept && e.accept(this);
-              return s != Ee && s.call(n, e), e
+              return s != Re && s.call(n, e), e
           }, e.prototype.visitArray = function(e, t) {
               if (!e) return e;
               var i, n = e.length;
@@ -2475,7 +2478,7 @@
               return t
           }, e
       }(),
-      Re = function() {
+      Ve = function() {
           function e(e) {
               this.imports = [], this.variableImports = [], this._onSequencerEmpty = e, this._currentDepth = 0
           }
@@ -2511,10 +2514,10 @@
               0 === this._currentDepth && this._onSequencerEmpty && this._onSequencerEmpty()
           }, e
       }(),
-      Oe = function(e, t) {
-          this._visitor = new Pe(this), this._importer = e, this._finish = t, this.context = new q.Eval, this.importCount = 0, this.onceFileDetectionMap = {}, this.recursionDetector = {}, this._sequencer = new Re(this._onSequencerEmpty.bind(this))
+      Fe = function(e, t) {
+          this._visitor = new Oe(this), this._importer = e, this._finish = t, this.context = new z.Eval, this.importCount = 0, this.onceFileDetectionMap = {}, this.recursionDetector = {}, this._sequencer = new Ve(this._onSequencerEmpty.bind(this))
       };
-  Oe.prototype = {
+  Fe.prototype = {
       isReplacing: !1,
       run: function(e) {
           try {
@@ -2530,7 +2533,7 @@
       visitImport: function(e, t) {
           var i = e.options.inline;
           if (!e.css || i) {
-              var n = new q.Eval(this.context, k(this.context.frames)),
+              var n = new z.Eval(this.context, k(this.context.frames)),
                   r = n.frames[0];
               this.importCount++, e.isVariableImport() ? this._sequencer.addVariableImport(this.processImportNode.bind(this, e, n, r)) : this.processImportNode(e, n, r)
           }
@@ -2608,7 +2611,7 @@
           this.context.frames.shift()
       }
   };
-  var Ve = function() {
+  var $e = function() {
           function e(e) {
               this.visible = e
           }
@@ -2623,9 +2626,9 @@
               return e ? e.constructor === Array ? this.visitArray(e) : (!e.blocksVisibility || e.blocksVisibility() || (this.visible ? e.ensureVisibility() : e.ensureInvisibility(), e.accept(this)), e) : e
           }, e
       }(),
-      Fe = function() {
+      Le = function() {
           function e() {
-              this._visitor = new Pe(this), this.contexts = [], this.allExtendsStack = [
+              this._visitor = new Oe(this), this.contexts = [], this.allExtendsStack = [
                   []
               ]
           }
@@ -2640,7 +2643,7 @@
                   var i, n, r, s, o = [],
                       a = e.rules,
                       l = a ? a.length : 0;
-                  for (i = 0; i < l; i++) e.rules[i] instanceof Ce.Extend && (o.push(a[i]), e.extendOnEveryPath = !0);
+                  for (i = 0; i < l; i++) e.rules[i] instanceof _e.Extend && (o.push(a[i]), e.extendOnEveryPath = !0);
                   var u = e.paths;
                   for (i = 0; i < u.length; i++) {
                       var c = u[i],
@@ -2663,12 +2666,12 @@
               this.allExtendsStack.length = this.allExtendsStack.length - 1
           }, e
       }(),
-      $e = function() {
+      je = function() {
           function e() {
-              this._visitor = new Pe(this)
+              this._visitor = new Oe(this)
           }
           return e.prototype.run = function(e) {
-              var t = new Fe;
+              var t = new Le;
               if (this.extendIndices = {}, t.run(e), !t.foundExtends) return e;
               e.allExtends = e.allExtends.concat(this.doExtendChaining(e.allExtends, e.allExtends)), this.allExtendsStack = [e.allExtends];
               var i = this._visitor.visit(e);
@@ -2690,7 +2693,7 @@
               for (i = i || 0, n = 0; n < e.length; n++)
                   for (r = 0; r < t.length; r++) l = e[n], u = t[r], l.parent_ids.indexOf(u.object_id) >= 0 || (a = [u.selfSelectors[0]], (s = f.findMatch(l, a)).length && (l.hasFoundMatches = !0, l.selfSelectors.forEach((function(e) {
                       var t = u.visibilityInfo();
-                      o = f.extendSelector(s, a, e, l.isVisible()), (c = new Ce.Extend(u.selector, u.option, 0, u.fileInfo(), t)).selfSelectors = o, o[o.length - 1].extendList = [c], h.push(c), c.ruleset = u.ruleset, c.parent_ids = c.parent_ids.concat(u.parent_ids, l.parent_ids), u.firstExtendOnThisSelectorPath && (c.firstExtendOnThisSelectorPath = !0, u.ruleset.paths.push(o))
+                      o = f.extendSelector(s, a, e, l.isVisible()), (c = new _e.Extend(u.selector, u.option, 0, u.fileInfo(), t)).selfSelectors = o, o[o.length - 1].extendList = [c], h.push(c), c.ruleset = u.ruleset, c.parent_ids = c.parent_ids.concat(u.parent_ids, l.parent_ids), u.firstExtendOnThisSelectorPath && (c.firstExtendOnThisSelectorPath = !0, u.ruleset.paths.push(o))
                   }))));
               if (h.length) {
                   if (this.extendChainCount++, i > 100) {
@@ -2742,9 +2745,9 @@
               return h
           }, e.prototype.isElementValuesEqual = function(e, t) {
               if ("string" == typeof e || "string" == typeof t) return e === t;
-              if (e instanceof Ce.Attribute) return e.op === t.op && e.key === t.key && (e.value && t.value ? (e = e.value.value || e.value) === (t = t.value.value || t.value) : !e.value && !t.value);
-              if (e = e.value, t = t.value, e instanceof Ce.Selector) {
-                  if (!(t instanceof Ce.Selector) || e.elements.length !== t.elements.length) return !1;
+              if (e instanceof _e.Attribute) return e.op === t.op && e.key === t.key && (e.value && t.value ? (e = e.value.value || e.value) === (t = t.value.value || t.value) : !e.value && !t.value);
+              if (e = e.value, t = t.value, e instanceof _e.Selector) {
+                  if (!(t instanceof _e.Selector) || e.elements.length !== t.elements.length) return !1;
                   for (var i = 0; i < e.elements.length; i++) {
                       if (e.elements[i].combinator.value !== t.elements[i].combinator.value && (0 !== i || (e.elements[i].combinator.value || " ") !== (t.elements[i].combinator.value || " "))) return !1;
                       if (!this.isElementValuesEqual(e.elements[i].value, t.elements[i].value)) return !1
@@ -2756,7 +2759,7 @@
               var r, s, o, a, l, u = 0,
                   c = 0,
                   h = [];
-              for (r = 0; r < e.length; r++) s = t[(a = e[r]).pathIndex], o = new Ce.Element(a.initialCombinator, i.elements[0].value, i.elements[0].isVariable, i.elements[0].getIndex(), i.elements[0].fileInfo()), a.pathIndex > u && c > 0 && (h[h.length - 1].elements = h[h.length - 1].elements.concat(t[u].elements.slice(c)), c = 0, u++), l = s.elements.slice(c, a.index).concat([o]).concat(i.elements.slice(1)), u === a.pathIndex && r > 0 ? h[h.length - 1].elements = h[h.length - 1].elements.concat(l) : (h = h.concat(t.slice(u, a.pathIndex))).push(new Ce.Selector(l)), u = a.endPathIndex, (c = a.endPathElementIndex) >= t[u].elements.length && (c = 0, u++);
+              for (r = 0; r < e.length; r++) s = t[(a = e[r]).pathIndex], o = new _e.Element(a.initialCombinator, i.elements[0].value, i.elements[0].isVariable, i.elements[0].getIndex(), i.elements[0].fileInfo()), a.pathIndex > u && c > 0 && (h[h.length - 1].elements = h[h.length - 1].elements.concat(t[u].elements.slice(c)), c = 0, u++), l = s.elements.slice(c, a.index).concat([o]).concat(i.elements.slice(1)), u === a.pathIndex && r > 0 ? h[h.length - 1].elements = h[h.length - 1].elements.concat(l) : (h = h.concat(t.slice(u, a.pathIndex))).push(new _e.Selector(l)), u = a.endPathIndex, (c = a.endPathElementIndex) >= t[u].elements.length && (c = 0, u++);
               return u < t.length && c > 0 && (h[h.length - 1].elements = h[h.length - 1].elements.concat(t[u].elements.slice(c)), u++), h = (h = h.concat(t.slice(u, t.length))).map((function(e) {
                   var t = e.createDerived(e.elements);
                   return n ? t.ensureVisibility() : t.ensureInvisibility(), t
@@ -2775,11 +2778,11 @@
               this.allExtendsStack.length = t
           }, e
       }(),
-      Le = function() {
+      Ne = function() {
           function e() {
               this.contexts = [
                   []
-              ], this._visitor = new Pe(this)
+              ], this._visitor = new Oe(this)
           }
           return e.prototype.run = function(e) {
               return this._visitor.visit(e)
@@ -2803,9 +2806,9 @@
               e.rules && e.rules.length && (e.rules[0].root = e.isRooted || 0 === i.length || null)
           }, e
       }(),
-      je = function() {
+      De = function() {
           function e(e) {
-              this._visitor = new Pe(this), this._context = e
+              this._visitor = new Oe(this), this._context = e
           }
           return e.prototype.containsSilentNonBlockedChild = function(e) {
               var t;
@@ -2832,10 +2835,10 @@
               return !!e.firstRoot || !this.isEmpty(e) && !(!e.root && !this.hasVisibleSelector(e))
           }, e
       }(),
-      Ne = function(e) {
-          this._visitor = new Pe(this), this._context = e, this.utils = new je(e)
+      Be = function(e) {
+          this._visitor = new Oe(this), this._context = e, this.utils = new De(e)
       };
-  Ne.prototype = {
+  Be.prototype = {
       isReplacing: !0,
       run: function(e) {
           return this._visitor.visit(e)
@@ -2878,7 +2881,7 @@
               if ("@charset" === e.name) {
                   if (this.charset) {
                       if (e.debugInfo) {
-                          var i = new Ce.Comment("/* " + e.toCSS(this._context).replace(/\n/g, "") + " */\n");
+                          var i = new _e.Comment("/* " + e.toCSS(this._context).replace(/\n/g, "") + " */\n");
                           return i.debugInfo = e.debugInfo, this._visitor.visit(i)
                       }
                       return
@@ -2892,12 +2895,12 @@
           if (e)
               for (var i = 0; i < e.length; i++) {
                   var n = e[i];
-                  if (t && n instanceof Ce.Declaration && !n.variable) throw {
+                  if (t && n instanceof _e.Declaration && !n.variable) throw {
                       message: "Properties must be inside selector blocks. They cannot be in the root",
                       index: n.getIndex(),
                       filename: n.fileInfo() && n.fileInfo().filename
                   };
-                  if (n instanceof Ce.Call) throw {
+                  if (n instanceof _e.Call) throw {
                       message: "Function '" + n.name + "' did not return a root node",
                       index: n.getIndex(),
                       filename: n.fileInfo() && n.fileInfo().filename
@@ -2922,7 +2925,7 @@
       _compileRulesetPaths: function(e) {
           e.paths && (e.paths = e.paths.filter((function(e) {
               var t;
-              for (" " === e[0].elements[0].combinator.value && (e[0].elements[0].combinator = new Ce.Combinator("")), t = 0; t < e.length; t++)
+              for (" " === e[0].elements[0].combinator.value && (e[0].elements[0].combinator = new _e.Combinator("")), t = 0; t < e.length; t++)
                   if (e[t].isVisible() && e[t].getIsOutput()) return !0;
               return !1
           })))
@@ -2931,9 +2934,9 @@
           if (e) {
               var t, i, n, r = {};
               for (n = e.length - 1; n >= 0; n--)
-                  if ((i = e[n]) instanceof Ce.Declaration)
+                  if ((i = e[n]) instanceof _e.Declaration)
                       if (r[i.name]) {
-                          (t = r[i.name]) instanceof Ce.Declaration && (t = r[i.name] = [r[i.name].toCSS(this._context)]);
+                          (t = r[i.name]) instanceof _e.Declaration && (t = r[i.name] = [r[i.name].toCSS(this._context)]);
                           var s = i.toCSS(this._context); - 1 !== t.indexOf(s) ? e.splice(n, 1) : t.push(s)
                       } else r[i.name] = i
           }
@@ -2951,24 +2954,24 @@
                   if (e.length > 0) {
                       var t = e[0],
                           i = [],
-                          n = [new Ce.Expression(i)];
+                          n = [new _e.Expression(i)];
                       e.forEach((function(e) {
-                          "+" === e.merge && i.length > 0 && n.push(new Ce.Expression(i = [])), i.push(e.value), t.important = t.important || e.important
-                      })), t.value = new Ce.Value(n)
+                          "+" === e.merge && i.length > 0 && n.push(new _e.Expression(i = [])), i.push(e.value), t.important = t.important || e.important
+                      })), t.value = new _e.Value(n)
                   }
               }))
           }
       }
   };
-  var De = {
-      Visitor: Pe,
-      ImportVisitor: Oe,
-      MarkVisibleSelectorsVisitor: Ve,
-      ExtendVisitor: $e,
-      JoinSelectorVisitor: Le,
-      ToCSSVisitor: Ne
+  var Ue = {
+      Visitor: Oe,
+      ImportVisitor: Fe,
+      MarkVisibleSelectorsVisitor: $e,
+      ExtendVisitor: je,
+      JoinSelectorVisitor: Ne,
+      ToCSSVisitor: Be
   };
-  var Be = function() {
+  var qe = function() {
           var e, t, i, n, r, s, o, a = [],
               l = {};
 
@@ -3200,8 +3203,8 @@
               }
           }, l
       },
-      Ue = function e(t, i, n) {
-          var r, s = Be();
+      Te = function e(t, i, n) {
+          var r, s = qe();
 
           function o(e, t) {
               throw new O({
@@ -3259,43 +3262,45 @@
                       }, i, o.filename)
                   }
               },
-              parse: function(r, o, a) {
-                  var l, u, c, h, f = null,
-                      p = "";
-                  if (u = a && a.globalVars ? e.serializeVars(a.globalVars) + "\n" : "", c = a && a.modifyVars ? "\n" + e.serializeVars(a.modifyVars) : "", t.pluginManager)
-                      for (var v = t.pluginManager.getPreProcessors(), d = 0; d < v.length; d++) r = v[d].process(r, {
+              parse: function(a, l, u) {
+                  var c, h, f, p, v = null,
+                      d = "";
+                  if (u && u.disablePluginRule && (r.plugin = function() {
+                          s.$re(/^@plugin?\s+/) && o("@plugin statements are not allowed when disablePluginRule is set to true")
+                      }), h = u && u.globalVars ? e.serializeVars(u.globalVars) + "\n" : "", f = u && u.modifyVars ? "\n" + e.serializeVars(u.modifyVars) : "", t.pluginManager)
+                      for (var m = t.pluginManager.getPreProcessors(), g = 0; g < m.length; g++) a = m[g].process(a, {
                           context: t,
                           imports: i,
                           fileInfo: n
                       });
-                  (u || a && a.banner) && (p = (a && a.banner ? a.banner : "") + u, (h = i.contentsIgnoredChars)[n.filename] = h[n.filename] || 0, h[n.filename] += p.length), r = p + (r = r.replace(/\r\n?/g, "\n")).replace(/^\uFEFF/, "") + c, i.contents[n.filename] = r;
+                  (h || u && u.banner) && (d = (u && u.banner ? u.banner : "") + h, (p = i.contentsIgnoredChars)[n.filename] = p[n.filename] || 0, p[n.filename] += d.length), a = d + (a = a.replace(/\r\n?/g, "\n")).replace(/^\uFEFF/, "") + f, i.contents[n.filename] = a;
                   try {
-                      s.start(r, t.chunkInput, (function(e, t) {
+                      s.start(a, t.chunkInput, (function(e, t) {
                           throw new O({
                               index: t,
                               type: "Parse",
                               message: e,
                               filename: n.filename
                           }, i)
-                      })), Ce.Node.prototype.parse = this, l = new Ce.Ruleset(null, this.parsers.primary()), Ce.Node.prototype.rootNode = l, l.root = !0, l.firstRoot = !0, l.functionRegistry = H.inherit()
+                      })), _e.Node.prototype.parse = this, c = new _e.Ruleset(null, this.parsers.primary()), _e.Node.prototype.rootNode = c, c.root = !0, c.firstRoot = !0, c.functionRegistry = Z.inherit()
                   } catch (e) {
-                      return o(new O(e, i, n.filename))
+                      return l(new O(e, i, n.filename))
                   }
-                  var m = s.end();
-                  if (!m.isFinished) {
-                      var g = m.furthestPossibleErrorMessage;
-                      g || (g = "Unrecognised input", "}" === m.furthestChar ? g += ". Possibly missing opening '{'" : ")" === m.furthestChar ? g += ". Possibly missing opening '('" : m.furthestReachedEnd && (g += ". Possibly missing something")), f = new O({
+                  var y = s.end();
+                  if (!y.isFinished) {
+                      var b = y.furthestPossibleErrorMessage;
+                      b || (b = "Unrecognised input", "}" === y.furthestChar ? b += ". Possibly missing opening '{'" : ")" === y.furthestChar ? b += ". Possibly missing opening '('" : y.furthestReachedEnd && (b += ". Possibly missing something")), v = new O({
                           type: "Parse",
-                          message: g,
-                          index: m.furthest,
+                          message: b,
+                          index: y.furthest,
                           filename: n.filename
                       }, i)
                   }
-                  var y = function(e) {
-                      return (e = f || e || i.error) ? (e instanceof O || (e = new O(e, i, n.filename)), o(e)) : o(null, l)
+                  var w = function(e) {
+                      return (e = v || e || i.error) ? (e instanceof O || (e = new O(e, i, n.filename)), l(e)) : l(null, c)
                   };
-                  if (!1 === t.processImports) return y();
-                  new De.ImportVisitor(i, y).run(l)
+                  if (!1 === t.processImports) return w();
+                  new Ue.ImportVisitor(i, w).run(c)
               },
               parsers: r = {
                   primary: function() {
@@ -3315,7 +3320,7 @@
                   comment: function() {
                       if (s.commentStore.length) {
                           var e = s.commentStore.shift();
-                          return new Ce.Comment(e.text, e.isLineComment, e.index, n)
+                          return new _e.Comment(e.text, e.isLineComment, e.index, n)
                       }
                   },
                   entities: {
@@ -3327,19 +3332,19 @@
                               r = !1;
                           if (s.save(), s.$char("~")) r = !0;
                           else if (e) return void s.restore();
-                          if (t = s.$quoted()) return s.forget(), new Ce.Quoted(t.charAt(0), t.substr(1, t.length - 2), r, i, n);
+                          if (t = s.$quoted()) return s.forget(), new _e.Quoted(t.charAt(0), t.substr(1, t.length - 2), r, i, n);
                           s.restore()
                       },
                       keyword: function() {
                           var e = s.$char("%") || s.$re(/^\[?(?:[\w-]|\\(?:[A-Fa-f0-9]{1,6} ?|[^A-Fa-f0-9]))+\]?/);
-                          if (e) return Ce.Color.fromKeyword(e) || new Ce.Keyword(e)
+                          if (e) return _e.Color.fromKeyword(e) || new _e.Keyword(e)
                       },
                       call: function() {
                           var e, t, i, r = s.i;
                           if (!s.peek(/^url\(/i))
                               if (s.save(), e = s.$re(/^([\w-]+|%|~|progid:[\w\.]+)\(/)) {
                                   if (e = e[1], (i = this.customFuncCall(e)) && (t = i.parse()) && i.stop) return s.forget(), t;
-                                  if (t = this.arguments(t), s.$char(")")) return s.forget(), new Ce.Call(e, t, r, n);
+                                  if (t = this.arguments(t), s.$char(")")) return s.forget(), new _e.Call(e, t, r, n);
                                   s.restore("Could not parse call arguments or missing ')'")
                               } else s.forget()
                       },
@@ -3370,7 +3375,7 @@
                                   if (!(i = r.detachedRuleset() || this.assignment() || r.expression())) break;
                                   i.value && 1 == i.value.length && (i = i.value[0]), n.push(i)
                               }
-                              s.$char(",") || (s.$char(";") || t) && (t = !0, i = n.length < 1 ? n[0] : new Ce.Value(n), o.push(i), n = [])
+                              s.$char(",") || (s.$char(";") || t) && (t = !0, i = n.length < 1 ? n[0] : new _e.Value(n), o.push(i), n = [])
                           }
                           return s.forget(), t ? o : n
                       },
@@ -3381,14 +3386,14 @@
                           var e, t;
                           if (s.save(), e = s.$re(/^\w+(?=\s?=)/i))
                               if (s.$char("=")) {
-                                  if (t = r.entity()) return s.forget(), new Ce.Assignment(e, t);
+                                  if (t = r.entity()) return s.forget(), new _e.Assignment(e, t);
                                   s.restore()
                               } else s.restore();
                           else s.restore()
                       },
                       url: function() {
                           var e, t = s.i;
-                          if (s.autoCommentAbsorb = !1, s.$str("url(")) return e = this.quoted() || this.variable() || this.property() || s.$re(/^(?:(?:\\[\(\)'"])|[^\(\)'"])+/) || "", s.autoCommentAbsorb = !0, l(")"), new Ce.URL(null != e.value || e instanceof Ce.Variable || e instanceof Ce.Property ? e : new Ce.Anonymous(e, t), t, n);
+                          if (s.autoCommentAbsorb = !1, s.$str("url(")) return e = this.quoted() || this.variable() || this.property() || s.$re(/^(?:(?:\\[\(\)'"])|[^\(\)'"])+/) || "", s.autoCommentAbsorb = !0, l(")"), new _e.URL(null != e.value || e instanceof _e.Variable || e instanceof _e.Property ? e : new _e.Anonymous(e, t), t, n);
                           s.autoCommentAbsorb = !0
                       },
                       variable: function() {
@@ -3398,25 +3403,25 @@
                                   var o = r.variableCall(t);
                                   if (o) return s.forget(), o
                               }
-                              return s.forget(), new Ce.Variable(t, i, n)
+                              return s.forget(), new _e.Variable(t, i, n)
                           }
                           s.restore()
                       },
                       variableCurly: function() {
                           var e, t = s.i;
-                          if ("@" === s.currentChar() && (e = s.$re(/^@\{([\w-]+)\}/))) return new Ce.Variable("@" + e[1], t, n)
+                          if ("@" === s.currentChar() && (e = s.$re(/^@\{([\w-]+)\}/))) return new _e.Variable("@" + e[1], t, n)
                       },
                       property: function() {
                           var e, t = s.i;
-                          if ("$" === s.currentChar() && (e = s.$re(/^\$[\w-]+/))) return new Ce.Property(e, t, n)
+                          if ("$" === s.currentChar() && (e = s.$re(/^\$[\w-]+/))) return new _e.Property(e, t, n)
                       },
                       propertyCurly: function() {
                           var e, t = s.i;
-                          if ("$" === s.currentChar() && (e = s.$re(/^\$\{([\w-]+)\}/))) return new Ce.Property("$" + e[1], t, n)
+                          if ("$" === s.currentChar() && (e = s.$re(/^\$\{([\w-]+)\}/))) return new _e.Property("$" + e[1], t, n)
                       },
                       color: function() {
                           var e;
-                          if (s.save(), "#" === s.currentChar() && (e = s.$re(/^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3,4})([\w.#\[])?/)) && !e[2]) return s.forget(), new Ce.Color(e[1], void 0, e[0]);
+                          if (s.save(), "#" === s.currentChar() && (e = s.$re(/^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3,4})([\w.#\[])?/)) && !e[2]) return s.forget(), new _e.Color(e[1], void 0, e[0]);
                           s.restore()
                       },
                       colorKeyword: function() {
@@ -3426,7 +3431,7 @@
                           var t = s.$re(/^[_A-Za-z-][_A-Za-z0-9-]+/);
                           if (s.autoCommentAbsorb = e, t) {
                               s.restore();
-                              var i = Ce.Color.fromKeyword(t);
+                              var i = _e.Color.fromKeyword(t);
                               return i ? (s.$str(t), i) : void 0
                           }
                           s.forget()
@@ -3434,19 +3439,19 @@
                       dimension: function() {
                           if (!s.peekNotNumeric()) {
                               var e = s.$re(/^([+-]?\d*\.?\d+)(%|[a-z_]+)?/i);
-                              return e ? new Ce.Dimension(e[1], e[2]) : void 0
+                              return e ? new _e.Dimension(e[1], e[2]) : void 0
                           }
                       },
                       unicodeDescriptor: function() {
                           var e;
-                          if (e = s.$re(/^U\+[0-9a-fA-F?]+(\-[0-9a-fA-F?]+)?/)) return new Ce.UnicodeDescriptor(e[0])
+                          if (e = s.$re(/^U\+[0-9a-fA-F?]+(\-[0-9a-fA-F?]+)?/)) return new _e.UnicodeDescriptor(e[0])
                       },
                       javascript: function() {
                           var e, t = s.i;
                           s.save();
                           var i = s.$char("~");
                           if (s.$char("`")) {
-                              if (e = s.$re(/^[^`]*`/)) return s.forget(), new Ce.JavaScript(e.substr(0, e.length - 1), Boolean(i), t, n);
+                              if (e = s.$re(/^[^`]*`/)) return s.forget(), new _e.JavaScript(e.substr(0, e.length - 1), Boolean(i), t, n);
                               s.restore("invalid javascript definition")
                           } else s.restore()
                       }
@@ -3462,8 +3467,8 @@
                       if (s.save(), a || "@" === s.currentChar() && (a = s.$re(/^(@[\w-]+)(\(\s*\))?/))) {
                           if (!(t = this.mixin.ruleLookups()) && (o && "()" !== s.$str("()") || "()" !== a[2])) return void s.restore("Missing '[...]' lookup in variable call");
                           o || (a = a[1]);
-                          var l = new Ce.VariableCall(a, i, n);
-                          return !o && r.end() ? (s.forget(), l) : (s.forget(), new Ce.NamespaceValue(l, t, i, n))
+                          var l = new _e.VariableCall(a, i, n);
+                          return !o && r.end() ? (s.forget(), l) : (s.forget(), new _e.NamespaceValue(l, t, i, n))
                       }
                       s.restore()
                   },
@@ -3472,7 +3477,7 @@
                       if (s.$str(e ? "&:extend(" : ":extend(")) {
                           do {
                               for (r = null, t = null; !(r = s.$re(/^(all)(?=\s*(\)|,))/)) && (i = this.element());) t ? t.push(i) : t = [i];
-                              r = r && r[1], t || o("Missing target selector for :extend()."), u = new Ce.Extend(new Ce.Selector(t), r, c, n), l ? l.push(u) : l = [u]
+                              r = r && r[1], t || o("Missing target selector for :extend()."), u = new _e.Extend(new _e.Selector(t), r, c, n), l ? l.push(u) : l = [u]
                           } while (s.$char(","));
                           return a(/^\)/), e && a(/^;/), l
                       }
@@ -3491,15 +3496,15 @@
                                   if (e && !i && !u) return void s.restore();
                                   if (!e && r.important() && (h = !0), e || r.end()) {
                                       s.forget();
-                                      var p = new Ce.mixin.Call(o, a, f, n, !i && h);
-                                      return i ? new Ce.NamespaceValue(p, i) : p
+                                      var p = new _e.mixin.Call(o, a, f, n, !i && h);
+                                      return i ? new _e.NamespaceValue(p, i) : p
                                   }
                               }
                               s.restore()
                           }
                       },
                       elements: function() {
-                          for (var e, t, i, r, o, a = /^[#.](?:[\w-]|\\(?:[A-Fa-f0-9]{1,6} ?|[^A-Fa-f0-9]))+/; o = s.i, t = s.$re(a);) r = new Ce.Element(i, t, !1, o, n), e ? e.push(r) : e = [r], i = s.$char(">");
+                          for (var e, t, i, r, o, a = /^[#.](?:[\w-]|\\(?:[A-Fa-f0-9]{1,6} ?|[^A-Fa-f0-9]))+/; o = s.i, t = s.$re(a);) r = new _e.Element(i, t, !1, o, n), e ? e.push(r) : e = [r], i = s.$char(">");
                           return e
                       },
                       args: function(e) {
@@ -3526,7 +3531,7 @@
                               if (!u || !m) break;
                               a = null, u.throwAwayComments && u.throwAwayComments(), l = u;
                               var g = null;
-                              if (e ? u.value && 1 == u.value.length && (g = u.value[0]) : g = u, g && (g instanceof Ce.Variable || g instanceof Ce.Property))
+                              if (e ? u.value && 1 == u.value.length && (g = u.value[0]) : g = u, g && (g instanceof _e.Variable || g instanceof _e.Property))
                                   if (s.$char(":")) {
                                       if (p.length > 0 && (t && o("Cannot mix ; and , as delimiter types"), i = !0), !(l = r.detachedRuleset() || r.expression())) {
                                           if (!e) return s.restore(), f.args = [], f;
@@ -3547,7 +3552,7 @@
                                   name: a,
                                   value: l,
                                   expand: c
-                              }), s.$char(",") ? m = !0 : ((m = ";" === s.$char(";")) || t) && (i && o("Cannot mix ; and , as delimiter types"), t = !0, p.length > 1 && (l = new Ce.Value(p)), v.push({
+                              }), s.$char(",") ? m = !0 : ((m = ";" === s.$char(";")) || t) && (i && o("Cannot mix ; and , as delimiter types"), t = !0, p.length > 1 && (l = new _e.Value(p)), v.push({
                                   name: n,
                                   value: l,
                                   expand: c
@@ -3563,7 +3568,7 @@
                                   e = t[1];
                                   var u = this.args(!1);
                                   if (o = u.args, l = u.variadic, !s.$char(")")) return void s.restore("Missing closing ')'");
-                                  if (s.commentStore.length = 0, s.$str("when") && (n = a(r.conditions, "expected condition")), i = r.block()) return s.forget(), new Ce.mixin.Definition(e, o, i, n, l);
+                                  if (s.commentStore.length = 0, s.$str("when") && (n = a(r.conditions, "expected condition")), i = r.block()) return s.forget(), new _e.mixin.Definition(e, o, i, n, l);
                                   s.restore()
                               } else s.restore()
                       },
@@ -3597,31 +3602,31 @@
                   },
                   ieAlpha: function() {
                       var e;
-                      if (s.$re(/^opacity=/i)) return (e = s.$re(/^\d+/)) || (e = "@{" + (e = a(r.entities.variable, "Could not parse alpha")).name.slice(1) + "}"), l(")"), new Ce.Quoted("", "alpha(opacity=" + e + ")")
+                      if (s.$re(/^opacity=/i)) return (e = s.$re(/^\d+/)) || (e = "@{" + (e = a(r.entities.variable, "Could not parse alpha")).name.slice(1) + "}"), l(")"), new _e.Quoted("", "alpha(opacity=" + e + ")")
                   },
                   element: function() {
                       var e, t, i, r = s.i;
-                      if (t = this.combinator(), (e = s.$re(/^(?:\d+\.\d+|\d+)%/) || s.$re(/^(?:[.#]?|:*)(?:[\w-]|[^\x00-\x9f]|\\(?:[A-Fa-f0-9]{1,6} ?|[^A-Fa-f0-9]))+/) || s.$char("*") || s.$char("&") || this.attribute() || s.$re(/^\([^&()@]+\)/) || s.$re(/^[\.#:](?=@)/) || this.entities.variableCurly()) || (s.save(), s.$char("(") ? (i = this.selector(!1)) && s.$char(")") ? (e = new Ce.Paren(i), s.forget()) : s.restore("Missing closing ')'") : s.forget()), e) return new Ce.Element(t, e, e instanceof Ce.Variable, r, n)
+                      if (t = this.combinator(), (e = s.$re(/^(?:\d+\.\d+|\d+)%/) || s.$re(/^(?:[.#]?|:*)(?:[\w-]|[^\x00-\x9f]|\\(?:[A-Fa-f0-9]{1,6} ?|[^A-Fa-f0-9]))+/) || s.$char("*") || s.$char("&") || this.attribute() || s.$re(/^\([^&()@]+\)/) || s.$re(/^[\.#:](?=@)/) || this.entities.variableCurly()) || (s.save(), s.$char("(") ? (i = this.selector(!1)) && s.$char(")") ? (e = new _e.Paren(i), s.forget()) : s.restore("Missing closing ')'") : s.forget()), e) return new _e.Element(t, e, e instanceof _e.Variable, r, n)
                   },
                   combinator: function() {
                       var e = s.currentChar();
                       if ("/" === e) {
                           s.save();
                           var t = s.$re(/^\/[a-z]+\//i);
-                          if (t) return s.forget(), new Ce.Combinator(t);
+                          if (t) return s.forget(), new _e.Combinator(t);
                           s.restore()
                       }
                       if (">" === e || "+" === e || "~" === e || "|" === e || "^" === e) {
                           for (s.i++, "^" === e && "^" === s.currentChar() && (e = "^^", s.i++); s.isWhitespace();) s.i++;
-                          return new Ce.Combinator(e)
+                          return new _e.Combinator(e)
                       }
-                      return s.isWhitespace(-1) ? new Ce.Combinator(" ") : new Ce.Combinator(null)
+                      return s.isWhitespace(-1) ? new _e.Combinator(" ") : new _e.Combinator(null)
                   },
                   selector: function(e) {
                       var t, i, r, l, u, c, h, f = s.i;
                       for (e = !1 !== e;
                           (e && (i = this.extend()) || e && (c = s.$str("when")) || (l = this.element())) && (c ? h = a(this.conditions, "expected condition") : h ? o("CSS guard can only be used at the end of selector") : i ? u = u ? u.concat(i) : i : (u && o("Extend can only be used at the end of selector"), r = s.currentChar(), t ? t.push(l) : t = [l], l = null), "{" !== r && "}" !== r && ";" !== r && "," !== r && ")" !== r););
-                      if (t) return new Ce.Selector(t, u, h, f, n);
+                      if (t) return new _e.Selector(t, u, h, f, n);
                       u && o("Extend must be used to extend a selector, it cannot be used on its own")
                   },
                   selectors: function() {
@@ -3631,8 +3636,8 @@
                   },
                   attribute: function() {
                       if (s.$char("[")) {
-                          var e, t, i, n = this.entities;
-                          return (e = n.variableCurly()) || (e = a(/^(?:[_A-Za-z0-9-\*]*\|)?(?:[_A-Za-z0-9-]|\\.)+/)), (i = s.$re(/^[|~*$^]?=/)) && (t = n.quoted() || s.$re(/^[0-9]+%/) || s.$re(/^[\w-]+/) || n.variableCurly()), l("]"), new Ce.Attribute(e, i, t)
+                          var e, t, i, n, r = this.entities;
+                          return (e = r.variableCurly()) || (e = a(/^(?:[_A-Za-z0-9-\*]*\|)?(?:[_A-Za-z0-9-]|\\.)+/)), (i = s.$re(/^[|~*$^]?=/)) && (t = r.quoted() || s.$re(/^[0-9]+%/) || s.$re(/^[\w-]+/) || r.variableCurly()) && (n = s.$re(/^[iIsS]/)), l("]"), new _e.Attribute(e, i, t, n)
                       }
                   },
                   block: function() {
@@ -3641,13 +3646,13 @@
                   },
                   blockRuleset: function() {
                       var e = this.block();
-                      return e && (e = new Ce.Ruleset(null, e)), e
+                      return e && (e = new _e.Ruleset(null, e)), e
                   },
                   detachedRuleset: function() {
                       var e, t, i;
                       if (s.save(), !s.$re(/^[.#]\(/) || (t = (e = this.mixin.args(!1)).args, i = e.variadic, s.$char(")"))) {
                           var n = this.blockRuleset();
-                          if (n) return s.forget(), t ? new Ce.mixin.Definition(null, t, n, null, i) : new Ce.DetachedRuleset(n);
+                          if (n) return s.forget(), t ? new _e.mixin.Definition(null, t, n, null, i) : new _e.DetachedRuleset(n);
                           s.restore()
                       } else s.restore()
                   },
@@ -3655,7 +3660,7 @@
                       var e, i, n;
                       if (s.save(), t.dumpLineNumbers && (n = u(s.i)), (e = this.selectors()) && (i = this.block())) {
                           s.forget();
-                          var r = new Ce.Ruleset(e, i, t.strictImports);
+                          var r = new _e.Ruleset(e, i, t.strictImports);
                           return t.dumpLineNumbers && (r.debugInfo = n), r
                       }
                       s.restore()
@@ -3666,17 +3671,17 @@
                       if ("." !== u && "#" !== u && "&" !== u && ":" !== u)
                           if (s.save(), e = this.variable() || this.ruleProperty()) {
                               if ((a = "string" == typeof e) && (t = this.detachedRuleset()) && (i = !0), s.commentStore.length = 0, !t) {
-                                  if (o = !a && e.length > 1 && e.pop().value, t = e[0].value && "--" === e[0].value.slice(0, 2) ? this.permissiveValue() : this.anonymousValue()) return s.forget(), new Ce.Declaration(e, t, !1, o, l, n);
+                                  if (o = !a && e.length > 1 && e.pop().value, t = e[0].value && "--" === e[0].value.slice(0, 2) ? this.permissiveValue() : this.anonymousValue()) return s.forget(), new _e.Declaration(e, t, !1, o, l, n);
                                   t || (t = this.value()), t ? r = this.important() : a && (t = this.permissiveValue())
                               }
-                              if (t && (this.end() || i)) return s.forget(), new Ce.Declaration(e, t, r, o, l, n);
+                              if (t && (this.end() || i)) return s.forget(), new _e.Declaration(e, t, r, o, l, n);
                               s.restore()
                           } else s.restore()
                   },
                   anonymousValue: function() {
                       var e = s.i,
                           t = s.$re(/^([^.#@\$+\/'"*`(;{}-]*);/);
-                      if (t) return new Ce.Anonymous(t[1], e)
+                      if (t) return new _e.Anonymous(t[1], e)
                   },
                   permissiveValue: function(e) {
                       var t, i, r, a, l = e || ";",
@@ -3693,29 +3698,29 @@
                               ((i = this.comment()) || (i = this.entity())) && a.push(i)
                           } while (i);
                           if (r = h(), a.length > 0) {
-                              if (a = new Ce.Expression(a), r) return a;
-                              c.push(a), " " === s.prevChar() && c.push(new Ce.Anonymous(" ", u))
+                              if (a = new _e.Expression(a), r) return a;
+                              c.push(a), " " === s.prevChar() && c.push(new _e.Anonymous(" ", u))
                           }
                           if (s.save(), a = s.$parseUntil(l)) {
-                              if ("string" == typeof a && o("Expected '" + a + "'", "Parse"), 1 === a.length && " " === a[0]) return s.forget(), new Ce.Anonymous("", u);
+                              if ("string" == typeof a && o("Expected '" + a + "'", "Parse"), 1 === a.length && " " === a[0]) return s.forget(), new _e.Anonymous("", u);
                               var f = void 0;
                               for (t = 0; t < a.length; t++)
-                                  if (f = a[t], Array.isArray(f)) c.push(new Ce.Quoted(f[0], f[1], !0, u, n));
+                                  if (f = a[t], Array.isArray(f)) c.push(new _e.Quoted(f[0], f[1], !0, u, n));
                                   else {
                                       t === a.length - 1 && (f = f.trim());
-                                      var p = new Ce.Quoted("'", f, !0, u, n);
+                                      var p = new _e.Quoted("'", f, !0, u, n);
                                       p.variableRegex = /@([\w-]+)/g, p.propRegex = /\$([\w-]+)/g, c.push(p)
-                                  } return s.forget(), new Ce.Expression(c, !0)
+                                  } return s.forget(), new _e.Expression(c, !0)
                           }
                           s.restore()
                       }
                   },
                   import: function() {
                       var e, t, i = s.i,
-                          r = s.$re(/^@import?\s+/);
+                          r = s.$re(/^@import\s+/);
                       if (r) {
                           var a = (r ? this.importOptions() : null) || {};
-                          if (e = this.entities.quoted() || this.entities.url()) return t = this.mediaFeatures(), s.$char(";") || (s.i = i, o("missing semi-colon or unrecognised media features on import")), t = t && new Ce.Value(t), new Ce.Import(e, t, a, i, n);
+                          if (e = this.entities.quoted() || this.entities.url()) return t = this.mediaFeatures(), s.$char(";") || (s.i = i, o("missing semi-colon or unrecognised media features on import")), t = t && new _e.Value(t), new _e.Import(e, t, a, i, n);
                           s.i = i, o("malformed import statement")
                       }
                   },
@@ -3745,9 +3750,9 @@
                           r = [];
                       s.save();
                       do {
-                          (e = i.keyword() || i.variable() || i.mixinLookup()) ? r.push(e): s.$char("(") && (t = this.property(), e = this.value(), s.$char(")") ? t && e ? r.push(new Ce.Paren(new Ce.Declaration(t, e, null, null, s.i, n, !0))) : e ? r.push(new Ce.Paren(e)) : o("badly formed media feature definition") : o("Missing closing ')'", "Parse"))
+                          (e = i.keyword() || i.variable() || i.mixinLookup()) ? r.push(e): s.$char("(") && (t = this.property(), e = this.value(), s.$char(")") ? t && e ? r.push(new _e.Paren(new _e.Declaration(t, e, null, null, s.i, n, !0))) : e ? r.push(new _e.Paren(e)) : o("badly formed media feature definition") : o("Missing closing ')'", "Parse"))
                       } while (e);
-                      if (s.forget(), r.length > 0) return new Ce.Expression(r)
+                      if (s.forget(), r.length > 0) return new _e.Expression(r)
                   },
                   mediaFeatures: function() {
                       var e, t = this.entities,
@@ -3761,18 +3766,18 @@
                   },
                   media: function() {
                       var e, i, r, a, l = s.i;
-                      if (t.dumpLineNumbers && (a = u(l)), s.save(), s.$str("@media")) return e = this.mediaFeatures(), (i = this.block()) || o("media definitions require block statements after any features"), s.forget(), r = new Ce.Media(i, e, l, n), t.dumpLineNumbers && (r.debugInfo = a), r;
+                      if (t.dumpLineNumbers && (a = u(l)), s.save(), s.$str("@media")) return e = this.mediaFeatures(), (i = this.block()) || o("media definitions require block statements after any features"), s.forget(), r = new _e.Media(i, e, l, n), t.dumpLineNumbers && (r.debugInfo = a), r;
                       s.restore()
                   },
                   plugin: function() {
                       var e, t, i, r = s.i;
-                      if (s.$re(/^@plugin?\s+/)) {
+                      if (s.$re(/^@plugin\s+/)) {
                           if (i = (t = this.pluginArgs()) ? {
                                   pluginArgs: t,
                                   isPlugin: !0
                               } : {
                                   isPlugin: !0
-                              }, e = this.entities.quoted() || this.entities.url()) return s.$char(";") || (s.i = r, o("missing semi-colon on @plugin")), new Ce.Import(e, null, i, r, n);
+                              }, e = this.entities.quoted() || this.entities.url()) return s.$char(";") || (s.i = r, o("missing semi-colon on @plugin")), new _e.Import(e, null, i, r, n);
                           s.i = r, o("malformed @plugin statement")
                       }
                   },
@@ -3806,7 +3811,7 @@
                                   default:
                                       h = !0
                               }
-                              if (s.commentStore.length = 0, l ? (i = this.entity()) || o("expected " + e + " identifier") : c ? (i = this.expression()) || o("expected " + e + " expression") : h && (i = this.permissiveValue(/^[{;]/), p = "{" === s.currentChar(), i ? i.value || (i = null) : p || ";" === s.currentChar() || o(e + " rule is missing block or ending semi-colon")), p && (r = this.blockRuleset()), r || !p && i && s.$char(";")) return s.forget(), new Ce.AtRule(e, i, r, f, n, t.dumpLineNumbers ? u(f) : null, v);
+                              if (s.commentStore.length = 0, l ? (i = this.entity()) || o("expected " + e + " identifier") : c ? (i = this.expression()) || o("expected " + e + " expression") : h && (i = this.permissiveValue(/^[{;]/), p = "{" === s.currentChar(), i ? i.value || (i = null) : p || ";" === s.currentChar() || o(e + " rule is missing block or ending semi-colon")), p && (r = this.blockRuleset()), r || !p && i && s.$char(";")) return s.forget(), new _e.AtRule(e, i, r, f, n, t.dumpLineNumbers ? u(f) : null, v);
                               s.restore("at-rule options not recognised")
                           }
                       }
@@ -3817,14 +3822,14 @@
                       do {
                           if ((e = this.expression()) && (t.push(e), !s.$char(","))) break
                       } while (e);
-                      if (t.length > 0) return new Ce.Value(t, i)
+                      if (t.length > 0) return new _e.Value(t, i)
                   },
                   important: function() {
                       if ("!" === s.currentChar()) return s.$re(/^! *important/)
                   },
                   sub: function() {
                       var e, t;
-                      if (s.save(), s.$char("(")) return (e = this.addition()) && s.$char(")") ? (s.forget(), (t = new Ce.Expression([e])).parens = !0, t) : void s.restore("Expected ')'");
+                      if (s.save(), s.$char("(")) return (e = this.addition()) && s.$char(")") ? (s.forget(), (t = new _e.Expression([e])).parens = !0, t) : void s.restore("Expected ')'");
                       s.restore()
                   },
                   multiplication: function() {
@@ -3839,7 +3844,7 @@
                                   s.restore();
                                   break
                               }
-                              s.forget(), e.parensInOp = !0, t.parensInOp = !0, n = new Ce.Operation(i, [n || e, t], r), r = s.isWhitespace(-1)
+                              s.forget(), e.parensInOp = !0, t.parensInOp = !0, n = new _e.Operation(i, [n || e, t], r), r = s.isWhitespace(-1)
                           }
                           return n || e
                       }
@@ -3848,14 +3853,14 @@
                       var e, t, i, n, r;
                       if (e = this.multiplication()) {
                           for (r = s.isWhitespace(-1);
-                              (i = s.$re(/^[-+]\s+/) || !r && (s.$char("+") || s.$char("-"))) && (t = this.multiplication());) e.parensInOp = !0, t.parensInOp = !0, n = new Ce.Operation(i, [n || e, t], r), r = s.isWhitespace(-1);
+                              (i = s.$re(/^[-+]\s+/) || !r && (s.$char("+") || s.$char("-"))) && (t = this.multiplication());) e.parensInOp = !0, t.parensInOp = !0, n = new _e.Operation(i, [n || e, t], r), r = s.isWhitespace(-1);
                           return n || e
                       }
                   },
                   conditions: function() {
                       var e, t, i, n = s.i;
                       if (e = this.condition(!0)) {
-                          for (; s.peek(/^,\s*(not\s*)?\(/) && s.$char(",") && (t = this.condition(!0));) i = new Ce.Condition("or", i || e, t, n);
+                          for (; s.peek(/^,\s*(not\s*)?\(/) && s.$char(",") && (t = this.condition(!0));) i = new _e.Condition("or", i || e, t, n);
                           return i || e
                       }
                   },
@@ -3864,7 +3869,7 @@
                       if (t = this.conditionAnd(e)) {
                           if (i = s.$str("or")) {
                               if (!(n = this.condition(e))) return;
-                              t = new Ce.Condition(i, t, n)
+                              t = new _e.Condition(i, t, n)
                           }
                           return t
                       }
@@ -3874,7 +3879,7 @@
                       if (t = (r = o.negatedCondition(e) || o.parenthesisCondition(e)) || e ? r : o.atomicCondition(e)) {
                           if (i = s.$str("and")) {
                               if (!(n = this.conditionAnd(e))) return;
-                              t = new Ce.Condition(i, t, n)
+                              t = new _e.Condition(i, t, n)
                           }
                           return t
                       }
@@ -3908,21 +3913,21 @@
                       function u() {
                           return this.addition() || a.keyword() || a.quoted() || a.mixinLookup()
                       }
-                      if (t = (u = u.bind(this))()) return s.$char(">") ? r = s.$char("=") ? ">=" : ">" : s.$char("<") ? r = s.$char("=") ? "<=" : "<" : s.$char("=") && (r = s.$char(">") ? "=>" : s.$char("<") ? "=<" : "="), r ? (i = u()) ? n = new Ce.Condition(r, t, i, l, !1) : o("expected expression") : n = new Ce.Condition("=", t, new Ce.Keyword("true"), l, !1), n
+                      if (t = (u = u.bind(this))()) return s.$char(">") ? r = s.$char("=") ? ">=" : ">" : s.$char("<") ? r = s.$char("=") ? "<=" : "<" : s.$char("=") && (r = s.$char(">") ? "=>" : s.$char("<") ? "=<" : "="), r ? (i = u()) ? n = new _e.Condition(r, t, i, l, !1) : o("expected expression") : n = new _e.Condition("=", t, new _e.Keyword("true"), l, !1), n
                   },
                   operand: function() {
                       var e, t = this.entities;
                       s.peek(/^-[@\$\(]/) && (e = s.$char("-"));
                       var i = this.sub() || t.dimension() || t.color() || t.variable() || t.property() || t.call() || t.quoted(!0) || t.colorKeyword() || t.mixinLookup();
-                      return e && (i.parensInOp = !0, i = new Ce.Negative(i)), i
+                      return e && (i.parensInOp = !0, i = new _e.Negative(i)), i
                   },
                   expression: function() {
                       var e, t, i = [],
                           n = s.i;
                       do {
-                          (e = this.comment()) ? i.push(e): ((e = this.addition() || this.entity()) instanceof Ce.Comment && (e = null), e && (i.push(e), s.peek(/^\/[\/*]/) || (t = s.$char("/")) && i.push(new Ce.Anonymous(t, n))))
+                          (e = this.comment()) ? i.push(e): ((e = this.addition() || this.entity()) instanceof _e.Comment && (e = null), e && (i.push(e), s.peek(/^\/[\/*]/) || (t = s.$char("/")) && i.push(new _e.Anonymous(t, n))))
                       } while (e);
-                      if (i.length > 0) return new Ce.Expression(i)
+                      if (i.length > 0) return new _e.Expression(i)
                   },
                   property: function() {
                       var e = s.$re(/^(\*?-?[_a-zA-Z0-9-]+)\s*:/);
@@ -3933,7 +3938,7 @@
                           r = [];
                       s.save();
                       var o = s.$re(/^([_a-zA-Z0-9-]+)\s*:/);
-                      if (o) return i = [new Ce.Keyword(o[1])], s.forget(), i;
+                      if (o) return i = [new _e.Keyword(o[1])], s.forget(), i;
 
                       function a(e) {
                           var t = s.i,
@@ -3942,7 +3947,7 @@
                       }
                       for (a(/^(\*?)/); a(/^((?:[\w-]+)|(?:[@\$]\{[\w-]+\}))/););
                       if (i.length > 1 && a(/^((?:\+_|\+)?)\s*:/)) {
-                          for (s.forget(), "" === i[0] && (i.shift(), r.shift()), t = 0; t < i.length; t++) e = i[t], i[t] = "@" !== e.charAt(0) && "$" !== e.charAt(0) ? new Ce.Keyword(e) : "@" === e.charAt(0) ? new Ce.Variable("@" + e.slice(2, -1), r[t], n) : new Ce.Property("$" + e.slice(2, -1), r[t], n);
+                          for (s.forget(), "" === i[0] && (i.shift(), r.shift()), t = 0; t < i.length; t++) e = i[t], i[t] = "@" !== e.charAt(0) && "$" !== e.charAt(0) ? new _e.Keyword(e) : "@" === e.charAt(0) ? new _e.Variable("@" + e.slice(2, -1), r[t], n) : new _e.Property("$" + e.slice(2, -1), r[t], n);
                           return i
                       }
                       s.restore()
@@ -3951,43 +3956,43 @@
           }
       };
 
-  function qe(e, t, i, n) {
+  function ze(e, t, i, n) {
       return t.eval(e) ? i.eval(e) : n ? n.eval(e) : new j
   }
 
-  function Te(e, t) {
+  function Ge(e, t) {
       try {
           return t.eval(e), L.True
       } catch (e) {
           return L.False
       }
   }
-  Ue.serializeVars = function(e) {
+  Te.serializeVars = function(e) {
       var t = "";
       for (var i in e)
           if (Object.hasOwnProperty.call(e, i)) {
               var n = e[i];
               t += ("@" === i[0] ? "" : "@") + i + ": " + n + (";" === String(n).slice(-1) ? "" : ";")
           } return t
-  }, qe.evalArgs = !1, Te.evalArgs = !1;
-  var ze, Ge = {
-      isdefined: Te,
+  }, ze.evalArgs = !1, Ge.evalArgs = !1;
+  var We, Je = {
+      isdefined: Ge,
       boolean: function(e) {
           return e ? L.True : L.False
       },
-      if: qe
+      if: ze
   };
 
-  function We(e) {
+  function He(e) {
       return Math.min(1, Math.max(0, e))
   }
 
-  function Je(e, t) {
-      var i = ze.hsla(t.h, t.s, t.l, t.a);
+  function Ke(e, t) {
+      var i = We.hsla(t.h, t.s, t.l, t.a);
       if (i) return e.value && /^(rgb|hsl)/.test(e.value) ? i.value = e.value : i.value = "rgb", i
   }
 
-  function He(e) {
+  function Ze(e) {
       if (e.toHSL) return e.toHSL();
       throw new Error("Argument cannot be evaluated to a color")
   }
@@ -3997,68 +4002,68 @@
       throw new Error("Argument cannot be evaluated to a color")
   }
 
-  function Ke(e) {
-      if (e instanceof ee) return parseFloat(e.unit.is("%") ? e.value / 100 : e.value);
+  function Xe(e) {
+      if (e instanceof ie) return parseFloat(e.unit.is("%") ? e.value / 100 : e.value);
       if ("number" == typeof e) return e;
       throw {
           type: "Argument",
           message: "color functions take numbers as parameters"
       }
   }
-  var Ze = ze = {
+  var Ye = We = {
       rgb: function(e, t, i) {
           var n = 1;
-          if (e instanceof ne) {
+          if (e instanceof se) {
               var r = e.value;
-              if (e = r[0], t = r[1], (i = r[2]) instanceof ie) {
+              if (e = r[0], t = r[1], (i = r[2]) instanceof re) {
                   var s = i;
                   i = s.operands[0], n = s.operands[1]
               }
           }
-          var o = ze.rgba(e, t, i, n);
+          var o = We.rgba(e, t, i, n);
           if (o) return o.value = "rgb", o
       },
       rgba: function(e, t, i, n) {
           try {
-              if (e instanceof c) return n = t ? Ke(t) : e.alpha, new c(e.rgb, n, "rgba");
+              if (e instanceof c) return n = t ? Xe(t) : e.alpha, new c(e.rgb, n, "rgba");
               var r = [e, t, i].map((function(e) {
-                  return i = 255, (t = e) instanceof ee && t.unit.is("%") ? parseFloat(t.value * i / 100) : Ke(t);
+                  return i = 255, (t = e) instanceof ie && t.unit.is("%") ? parseFloat(t.value * i / 100) : Xe(t);
                   var t, i
               }));
-              return n = Ke(n), new c(r, n, "rgba")
+              return n = Xe(n), new c(r, n, "rgba")
           } catch (e) {}
       },
       hsl: function(e, t, i) {
           var n = 1;
-          if (e instanceof ne) {
+          if (e instanceof se) {
               var r = e.value;
-              if (e = r[0], t = r[1], (i = r[2]) instanceof ie) {
+              if (e = r[0], t = r[1], (i = r[2]) instanceof re) {
                   var s = i;
                   i = s.operands[0], n = s.operands[1]
               }
           }
-          var o = ze.hsla(e, t, i, n);
+          var o = We.hsla(e, t, i, n);
           if (o) return o.value = "hsl", o
       },
       hsla: function(e, t, i, n) {
           try {
-              if (e instanceof c) return n = t ? Ke(t) : e.alpha, new c(e.rgb, n, "hsla");
+              if (e instanceof c) return n = t ? Xe(t) : e.alpha, new c(e.rgb, n, "hsla");
               var r, s;
 
               function o(e) {
                   return 6 * (e = e < 0 ? e + 1 : e > 1 ? e - 1 : e) < 1 ? r + (s - r) * e * 6 : 2 * e < 1 ? s : 3 * e < 2 ? r + (s - r) * (2 / 3 - e) * 6 : r
               }
-              e = Ke(e) % 360 / 360, t = We(Ke(t)), i = We(Ke(i)), n = We(Ke(n)), r = 2 * i - (s = i <= .5 ? i * (t + 1) : i + t - i * t);
+              e = Xe(e) % 360 / 360, t = He(Xe(t)), i = He(Xe(i)), n = He(Xe(n)), r = 2 * i - (s = i <= .5 ? i * (t + 1) : i + t - i * t);
               var a = [255 * o(e + 1 / 3), 255 * o(e), 255 * o(e - 1 / 3)];
-              return n = Ke(n), new c(a, n, "hsla")
+              return n = Xe(n), new c(a, n, "hsla")
           } catch (e) {}
       },
       hsv: function(e, t, i) {
-          return ze.hsva(e, t, i, 1)
+          return We.hsva(e, t, i, 1)
       },
       hsva: function(e, t, i, n) {
           var r, s;
-          e = Ke(e) % 360 / 360 * 360, t = Ke(t), i = Ke(i), n = Ke(n);
+          e = Xe(e) % 360 / 360 * 360, t = Xe(t), i = Xe(i), n = Xe(n);
           var o = [i, i * (1 - t), i * (1 - (s = e / 60 - (r = Math.floor(e / 60 % 6))) * t), i * (1 - (1 - s) * t)],
               a = [
                   [0, 3, 1],
@@ -4068,84 +4073,84 @@
                   [3, 1, 0],
                   [0, 1, 2]
               ];
-          return ze.rgba(255 * o[a[r][0]], 255 * o[a[r][1]], 255 * o[a[r][2]], n)
+          return We.rgba(255 * o[a[r][0]], 255 * o[a[r][1]], 255 * o[a[r][2]], n)
       },
       hue: function(e) {
-          return new ee(He(e).h)
+          return new ie(Ze(e).h)
       },
       saturation: function(e) {
-          return new ee(100 * He(e).s, "%")
+          return new ie(100 * Ze(e).s, "%")
       },
       lightness: function(e) {
-          return new ee(100 * He(e).l, "%")
+          return new ie(100 * Ze(e).l, "%")
       },
       hsvhue: function(e) {
-          return new ee(Qe(e).h)
+          return new ie(Qe(e).h)
       },
       hsvsaturation: function(e) {
-          return new ee(100 * Qe(e).s, "%")
+          return new ie(100 * Qe(e).s, "%")
       },
       hsvvalue: function(e) {
-          return new ee(100 * Qe(e).v, "%")
+          return new ie(100 * Qe(e).v, "%")
       },
       red: function(e) {
-          return new ee(e.rgb[0])
+          return new ie(e.rgb[0])
       },
       green: function(e) {
-          return new ee(e.rgb[1])
+          return new ie(e.rgb[1])
       },
       blue: function(e) {
-          return new ee(e.rgb[2])
+          return new ie(e.rgb[2])
       },
       alpha: function(e) {
-          return new ee(He(e).a)
+          return new ie(Ze(e).a)
       },
       luma: function(e) {
-          return new ee(e.luma() * e.alpha * 100, "%")
+          return new ie(e.luma() * e.alpha * 100, "%")
       },
       luminance: function(e) {
           var t = .2126 * e.rgb[0] / 255 + .7152 * e.rgb[1] / 255 + .0722 * e.rgb[2] / 255;
-          return new ee(t * e.alpha * 100, "%")
+          return new ie(t * e.alpha * 100, "%")
       },
       saturate: function(e, t, i) {
           if (!e.rgb) return null;
-          var n = He(e);
-          return void 0 !== i && "relative" === i.value ? n.s += n.s * t.value / 100 : n.s += t.value / 100, n.s = We(n.s), Je(e, n)
+          var n = Ze(e);
+          return void 0 !== i && "relative" === i.value ? n.s += n.s * t.value / 100 : n.s += t.value / 100, n.s = He(n.s), Ke(e, n)
       },
       desaturate: function(e, t, i) {
-          var n = He(e);
-          return void 0 !== i && "relative" === i.value ? n.s -= n.s * t.value / 100 : n.s -= t.value / 100, n.s = We(n.s), Je(e, n)
+          var n = Ze(e);
+          return void 0 !== i && "relative" === i.value ? n.s -= n.s * t.value / 100 : n.s -= t.value / 100, n.s = He(n.s), Ke(e, n)
       },
       lighten: function(e, t, i) {
-          var n = He(e);
-          return void 0 !== i && "relative" === i.value ? n.l += n.l * t.value / 100 : n.l += t.value / 100, n.l = We(n.l), Je(e, n)
+          var n = Ze(e);
+          return void 0 !== i && "relative" === i.value ? n.l += n.l * t.value / 100 : n.l += t.value / 100, n.l = He(n.l), Ke(e, n)
       },
       darken: function(e, t, i) {
-          var n = He(e);
-          return void 0 !== i && "relative" === i.value ? n.l -= n.l * t.value / 100 : n.l -= t.value / 100, n.l = We(n.l), Je(e, n)
+          var n = Ze(e);
+          return void 0 !== i && "relative" === i.value ? n.l -= n.l * t.value / 100 : n.l -= t.value / 100, n.l = He(n.l), Ke(e, n)
       },
       fadein: function(e, t, i) {
-          var n = He(e);
-          return void 0 !== i && "relative" === i.value ? n.a += n.a * t.value / 100 : n.a += t.value / 100, n.a = We(n.a), Je(e, n)
+          var n = Ze(e);
+          return void 0 !== i && "relative" === i.value ? n.a += n.a * t.value / 100 : n.a += t.value / 100, n.a = He(n.a), Ke(e, n)
       },
       fadeout: function(e, t, i) {
-          var n = He(e);
-          return void 0 !== i && "relative" === i.value ? n.a -= n.a * t.value / 100 : n.a -= t.value / 100, n.a = We(n.a), Je(e, n)
+          var n = Ze(e);
+          return void 0 !== i && "relative" === i.value ? n.a -= n.a * t.value / 100 : n.a -= t.value / 100, n.a = He(n.a), Ke(e, n)
       },
       fade: function(e, t) {
-          var i = He(e);
-          return i.a = t.value / 100, i.a = We(i.a), Je(e, i)
+          var i = Ze(e);
+          return i.a = t.value / 100, i.a = He(i.a), Ke(e, i)
       },
       spin: function(e, t) {
-          var i = He(e),
+          var i = Ze(e),
               n = (i.h + t.value) % 360;
-          return i.h = n < 0 ? 360 + n : n, Je(e, i)
+          return i.h = n < 0 ? 360 + n : n, Ke(e, i)
       },
       mix: function(e, t, i) {
-          i || (i = new ee(50));
+          i || (i = new ie(50));
           var n = i.value / 100,
               r = 2 * n - 1,
-              s = He(e).a - He(t).a,
+              s = Ze(e).a - Ze(t).a,
               o = ((r * s == -1 ? r : (r + s) / (1 + r * s)) + 1) / 2,
               a = 1 - o,
               l = [e.rgb[0] * o + t.rgb[0] * a, e.rgb[1] * o + t.rgb[1] * a, e.rgb[2] * o + t.rgb[2] * a],
@@ -4153,21 +4158,21 @@
           return new c(l, u)
       },
       greyscale: function(e) {
-          return ze.desaturate(e, new ee(100))
+          return We.desaturate(e, new ie(100))
       },
       contrast: function(e, t, i, n) {
           if (!e.rgb) return null;
-          if (void 0 === i && (i = ze.rgba(255, 255, 255, 1)), void 0 === t && (t = ze.rgba(0, 0, 0, 1)), t.luma() > i.luma()) {
+          if (void 0 === i && (i = We.rgba(255, 255, 255, 1)), void 0 === t && (t = We.rgba(0, 0, 0, 1)), t.luma() > i.luma()) {
               var r = i;
               i = t, t = r
           }
-          return n = void 0 === n ? .43 : Ke(n), e.luma() < n ? i : t
+          return n = void 0 === n ? .43 : Xe(n), e.luma() < n ? i : t
       },
       argb: function(e) {
           return new j(e.toARGB())
       },
       color: function(e) {
-          if (e instanceof ue && /^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3,4})$/i.test(e.value)) {
+          if (e instanceof he && /^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3,4})$/i.test(e.value)) {
               var t = e.value.slice(1);
               return new c(t, void 0, "#" + t)
           }
@@ -4178,14 +4183,14 @@
           }
       },
       tint: function(e, t) {
-          return ze.mix(ze.rgb(255, 255, 255), e, t)
+          return We.mix(We.rgb(255, 255, 255), e, t)
       },
       shade: function(e, t) {
-          return ze.mix(ze.rgb(0, 0, 0), e, t)
+          return We.mix(We.rgb(0, 0, 0), e, t)
       }
   };
 
-  function Xe(e, t, i) {
+  function et(e, t, i) {
       var n, r, s, o, a = t.alpha,
           l = i.alpha,
           u = [];
@@ -4193,7 +4198,7 @@
       for (var h = 0; h < 3; h++) o = e(n = t.rgb[h] / 255, r = i.rgb[h] / 255), s && (o = (l * r + a * (n - l * (n + r - o))) / s), u[h] = 255 * o;
       return new c(u, s)
   }
-  var Ye = {
+  var tt = {
       multiply: function(e, t) {
           return e * t
       },
@@ -4201,7 +4206,7 @@
           return e + t - e * t
       },
       overlay: function(e, t) {
-          return (e *= 2) <= 1 ? Ye.multiply(e, t) : Ye.screen(e - 1, t)
+          return (e *= 2) <= 1 ? tt.multiply(e, t) : tt.screen(e - 1, t)
       },
       softlight: function(e, t) {
           var i = 1,
@@ -4209,7 +4214,7 @@
           return t > .5 && (n = 1, i = e > .25 ? Math.sqrt(e) : ((16 * e - 12) * e + 4) * e), e - (1 - 2 * t) * n * (i - e)
       },
       hardlight: function(e, t) {
-          return Ye.overlay(t, e)
+          return tt.overlay(t, e)
       },
       difference: function(e, t) {
           return Math.abs(e - t)
@@ -4224,11 +4229,11 @@
           return 1 - Math.abs(e + t - 1)
       }
   };
-  for (var et in Ye) Ye.hasOwnProperty(et) && (Xe[et] = Xe.bind(null, Ye[et]));
-  var tt = function(e) {
+  for (var it in tt) tt.hasOwnProperty(it) && (et[it] = et.bind(null, tt[it]));
+  var nt = function(e) {
           return Array.isArray(e.value) ? e.value : Array(e)
       },
-      it = {
+      rt = {
           _SELF: function(e) {
               return e
           },
@@ -4237,17 +4242,17 @@
               return 1 === e.length ? e[0] : new $(e)
           },
           extract: function(e, t) {
-              return t = t.value - 1, tt(e)[t]
+              return t = t.value - 1, nt(e)[t]
           },
           length: function(e) {
-              return new ee(tt(e).length)
+              return new ie(nt(e).length)
           },
           range: function(e, t, i) {
               var n, r, s = 1,
                   o = [];
               t ? (r = t, n = e.value, i && (s = i.value)) : (n = 1, r = e);
-              for (var a = n; a <= r.value; a += s) o.push(new ee(a, r.unit));
-              return new ne(o)
+              for (var a = n; a <= r.value; a += s) o.push(new ie(a, r.unit));
+              return new se(o)
           },
           each: function(e, t) {
               var i, n, r = this,
@@ -4255,7 +4260,7 @@
                   o = function(e) {
                       return e instanceof u ? e.eval(r.context) : e
                   };
-              n = !e.value || e instanceof ue ? e.ruleset ? o(e.ruleset).rules : e.rules ? e.rules.map(o) : Array.isArray(e) ? e.map(o) : [o(e)] : Array.isArray(e.value) ? e.value.map(o) : [o(e.value)];
+              n = !e.value || e instanceof he ? e.ruleset ? o(e.ruleset).rules : e.rules ? e.rules.map(o) : Array.isArray(e) ? e.map(o) : [o(e)] : Array.isArray(e.value) ? e.value.map(o) : [o(e.value)];
               var a = "@value",
                   l = "@key",
                   c = "@index";
@@ -4264,19 +4269,19 @@
                   var f = void 0,
                       p = void 0,
                       v = n[h];
-                  v instanceof D ? (f = "string" == typeof v.name ? v.name : v.name[0].value, p = v.value) : (f = new ee(h + 1), p = v), v instanceof U || (i = t.rules.slice(0), a && i.push(new D(a, p, !1, !1, this.index, this.currentFileInfo)), c && i.push(new D(c, new ee(h + 1), !1, !1, this.index, this.currentFileInfo)), l && i.push(new D(l, f, !1, !1, this.index, this.currentFileInfo)), s.push(new K([new F([new m("", "&")])], i, t.strictImports, t.visibilityInfo())))
+                  v instanceof D ? (f = "string" == typeof v.name ? v.name : v.name[0].value, p = v.value) : (f = new ie(h + 1), p = v), v instanceof T || (i = t.rules.slice(0), a && i.push(new D(a, p, !1, !1, this.index, this.currentFileInfo)), c && i.push(new D(c, new ie(h + 1), !1, !1, this.index, this.currentFileInfo)), l && i.push(new D(l, f, !1, !1, this.index, this.currentFileInfo)), s.push(new X([new F([new m("", "&")])], i, t.strictImports, t.visibilityInfo())))
               }
-              return new K([new F([new m("", "&")])], s, t.strictImports, t.visibilityInfo()).eval(this.context)
+              return new X([new F([new m("", "&")])], s, t.strictImports, t.visibilityInfo()).eval(this.context)
           }
       },
-      nt = function(e, t, i) {
-          if (!(i instanceof ee)) throw {
+      st = function(e, t, i) {
+          if (!(i instanceof ie)) throw {
               type: "Argument",
               message: "argument must be a number"
           };
-          return null == t ? t = i.unit : i = i.unify(), new ee(e(parseFloat(i.value)), t)
+          return null == t ? t = i.unit : i = i.unify(), new ie(e(parseFloat(i.value)), t)
       },
-      rt = {
+      ot = {
           ceil: null,
           floor: null,
           sqrt: null,
@@ -4288,14 +4293,14 @@
           asin: "rad",
           acos: "rad"
       };
-  for (var st in rt) rt.hasOwnProperty(st) && (rt[st] = nt.bind(null, Math[st], rt[st]));
-  rt.round = function(e, t) {
+  for (var at in ot) ot.hasOwnProperty(at) && (ot[at] = st.bind(null, Math[at], ot[at]));
+  ot.round = function(e, t) {
       var i = void 0 === t ? 0 : t.value;
-      return nt((function(e) {
+      return st((function(e) {
           return e.toFixed(i)
       }), null, e)
   };
-  var ot = function(e, t) {
+  var lt = function(e, t) {
           switch ((t = Array.prototype.slice.call(t)).length) {
               case 0:
                   throw {
@@ -4305,8 +4310,8 @@
           var i, n, r, s, o, a, l, u, c = [],
               h = {};
           for (i = 0; i < t.length; i++)
-              if ((r = t[i]) instanceof ee)
-                  if (l = "" !== (a = "" === (s = "" === r.unit.toString() && void 0 !== u ? new ee(r.value, u).unify() : r.unify()).unit.toString() && void 0 !== l ? l : s.unit.toString()) && void 0 === l || "" !== a && "" === c[0].unify().unit.toString() ? a : l, u = "" !== a && void 0 === u ? r.unit.toString() : u, void 0 !== (n = void 0 !== h[""] && "" !== a && a === l ? h[""] : h[a])) o = "" === c[n].unit.toString() && void 0 !== u ? new ee(c[n].value, u).unify() : c[n].unify(), (e && s.value < o.value || !e && s.value > o.value) && (c[n] = r);
+              if ((r = t[i]) instanceof ie)
+                  if (l = "" !== (a = "" === (s = "" === r.unit.toString() && void 0 !== u ? new ie(r.value, u).unify() : r.unify()).unit.toString() && void 0 !== l ? l : s.unit.toString()) && void 0 === l || "" !== a && "" === c[0].unify().unit.toString() ? a : l, u = "" !== a && void 0 === u ? r.unit.toString() : u, void 0 !== (n = void 0 !== h[""] && "" !== a && a === l ? h[""] : h[a])) o = "" === c[n].unit.toString() && void 0 !== u ? new ie(c[n].value, u).unify() : c[n].unify(), (e && s.value < o.value || !e && s.value > o.value) && (c[n] = r);
                   else {
                       if (void 0 !== l && a !== l) throw {
                           type: "Argument",
@@ -4319,52 +4324,52 @@
               return e.toCSS(this.context)
           })).join(this.context.compress ? "," : ", "), new j((e ? "min" : "max") + "(" + t + ")"))
       },
-      at = {
+      ut = {
           min: function() {
               for (var e = [], t = 0; t < arguments.length; t++) e[t] = arguments[t];
               try {
-                  return ot(!0, e)
+                  return lt(!0, e)
               } catch (e) {}
           },
           max: function() {
               for (var e = [], t = 0; t < arguments.length; t++) e[t] = arguments[t];
               try {
-                  return ot(!1, e)
+                  return lt(!1, e)
               } catch (e) {}
           },
           convert: function(e, t) {
               return e.convertTo(t.value)
           },
           pi: function() {
-              return new ee(Math.PI)
+              return new ie(Math.PI)
           },
           mod: function(e, t) {
-              return new ee(e.value % t.value, e.unit)
+              return new ie(e.value % t.value, e.unit)
           },
           pow: function(e, t) {
-              if ("number" == typeof e && "number" == typeof t) e = new ee(e), t = new ee(t);
-              else if (!(e instanceof ee && t instanceof ee)) throw {
+              if ("number" == typeof e && "number" == typeof t) e = new ie(e), t = new ie(t);
+              else if (!(e instanceof ie && t instanceof ie)) throw {
                   type: "Argument",
                   message: "arguments must be numbers"
               };
-              return new ee(Math.pow(e.value, t.value), e.unit)
+              return new ie(Math.pow(e.value, t.value), e.unit)
           },
           percentage: function(e) {
-              return nt((function(e) {
+              return st((function(e) {
                   return 100 * e
               }), "%", e)
           }
       },
-      lt = {
+      ct = {
           e: function(e) {
-              return new ue('"', e instanceof ve ? e.evaluated : e.value, !0)
+              return new he('"', e instanceof me ? e.evaluated : e.value, !0)
           },
           escape: function(e) {
               return new j(encodeURI(e.value).replace(/=/g, "%3D").replace(/:/g, "%3A").replace(/#/g, "%23").replace(/;/g, "%3B").replace(/\(/g, "%28").replace(/\)/g, "%29"))
           },
           replace: function(e, t, i, n) {
               var r = e.value;
-              return i = "Quoted" === i.type ? i.value : i.toCSS(), r = r.replace(new RegExp(t.value, n ? n.value : ""), i), new ue(e.quote || "", r, e.escaped)
+              return i = "Quoted" === i.type ? i.value : i.toCSS(), r = r.replace(new RegExp(t.value, n ? n.value : ""), i), new he(e.quote || "", r, e.escaped)
           },
           "%": function(e) {
               for (var t = Array.prototype.slice.call(arguments, 1), i = e.value, n = function(e) {
@@ -4373,13 +4378,13 @@
                           return i.match(/[A-Z]$/) ? encodeURIComponent(n) : n
                       }))
                   }, r = 0; r < t.length; r++) n(r);
-              return i = i.replace(/%%/g, "%"), new ue(e.quote || "", i, e.escaped)
+              return i = i.replace(/%%/g, "%"), new he(e.quote || "", i, e.escaped)
           }
       },
-      ut = function(e, t) {
+      ht = function(e, t) {
           return e instanceof t ? L.True : L.False
       },
-      ct = function(e, t) {
+      ft = function(e, t) {
           if (void 0 === t) throw {
               type: "Argument",
               message: "missing the required second argument to isunit."
@@ -4388,56 +4393,56 @@
               type: "Argument",
               message: "Second argument to isunit should be a unit or a string."
           };
-          return e instanceof ee && e.unit.is(t) ? L.True : L.False
+          return e instanceof ie && e.unit.is(t) ? L.True : L.False
       },
-      ht = {
+      pt = {
           isruleset: function(e) {
-              return ut(e, X)
+              return ht(e, ee)
           },
           iscolor: function(e) {
-              return ut(e, c)
+              return ht(e, c)
           },
           isnumber: function(e) {
-              return ut(e, ee)
+              return ht(e, ie)
           },
           isstring: function(e) {
-              return ut(e, ue)
+              return ht(e, he)
           },
           iskeyword: function(e) {
-              return ut(e, L)
+              return ht(e, L)
           },
           isurl: function(e) {
-              return ut(e, ce)
+              return ht(e, fe)
           },
           ispixel: function(e) {
-              return ct(e, "px")
+              return ft(e, "px")
           },
           ispercentage: function(e) {
-              return ct(e, "%")
+              return ft(e, "%")
           },
           isem: function(e) {
-              return ct(e, "em")
+              return ft(e, "em")
           },
-          isunit: ct,
+          isunit: ft,
           unit: function(e, t) {
-              if (!(e instanceof ee)) throw {
+              if (!(e instanceof ie)) throw {
                   type: "Argument",
-                  message: "the first argument to unit must be a number" + (e instanceof ie ? ". Have you forgotten parenthesis?" : "")
+                  message: "the first argument to unit must be a number" + (e instanceof re ? ". Have you forgotten parenthesis?" : "")
               };
-              return t = t ? t instanceof L ? t.value : t.toCSS() : "", new ee(e.value, t)
+              return t = t ? t instanceof L ? t.value : t.toCSS() : "", new ie(e.value, t)
           },
           "get-unit": function(e) {
               return new j(e.unit)
           }
       },
-      ft = function(e) {
+      vt = function(e) {
           var t = {
-              functionRegistry: H,
-              functionCaller: re
+              functionRegistry: Z,
+              functionCaller: oe
           };
-          return H.addMultiple(Ge), H.add("default", Q.eval.bind(Q)), H.addMultiple(Ze), H.addMultiple(Xe), H.addMultiple(function(e) {
+          return Z.addMultiple(Je), Z.add("default", Q.eval.bind(Q)), Z.addMultiple(Ye), Z.addMultiple(et), Z.addMultiple(function(e) {
               var t = function(e, t) {
-                  return new ce(t, e.index, e.currentFileInfo).eval(e.context)
+                  return new fe(t, e.index, e.currentFileInfo).eval(e.context)
               };
               return {
                   "data-uri": function(i, n) {
@@ -4467,10 +4472,10 @@
                       var m = d.contents;
                       if (p && !e.encodeBase64) return t(this, n);
                       var g = "data:" + s + "," + (m = p ? e.encodeBase64(m) : encodeURIComponent(m)) + c;
-                      return new ce(new ue('"' + g + '"', g, !1, this.index, this.currentFileInfo), this.index, this.currentFileInfo)
+                      return new fe(new he('"' + g + '"', g, !1, this.index, this.currentFileInfo), this.index, this.currentFileInfo)
                   }
               }
-          }(e)), H.addMultiple(it), H.addMultiple(rt), H.addMultiple(at), H.addMultiple(lt), H.addMultiple({
+          }(e)), Z.addMultiple(rt), Z.addMultiple(ot), Z.addMultiple(ut), Z.addMultiple(ct), Z.addMultiple({
               "svg-gradient": function(e) {
                   var t, i, n, r, s, o, a, l, u = "linear",
                       h = 'x="0" y="0" width="1" height="1"',
@@ -4507,20 +4512,20 @@
                               type: "Argument", message: "svg-gradient direction must be 'to bottom', 'to right', 'to bottom right', 'to top right' or 'ellipse at center'"
                           }
                   }
-                  for (n = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><' + u + 'Gradient id="g" ' + i + ">", r = 0; r < t.length; r += 1) t[r] instanceof ne ? (s = t[r].value[0], o = t[r].value[1]) : (s = t[r], o = void 0), s instanceof c && ((0 === r || r + 1 === t.length) && void 0 === o || o instanceof ee) || v(), a = o ? o.toCSS(f) : 0 === r ? "0%" : "100%", l = s.alpha, n += '<stop offset="' + a + '" stop-color="' + s.toRGB() + '"' + (l < 1 ? ' stop-opacity="' + l + '"' : "") + "/>";
-                  return n += "</" + u + "Gradient><rect " + h + ' fill="url(#g)" /></svg>', n = encodeURIComponent(n), new ce(new ue("'" + (n = "data:image/svg+xml," + n) + "'", n, !1, this.index, this.currentFileInfo), this.index, this.currentFileInfo)
+                  for (n = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><' + u + 'Gradient id="g" ' + i + ">", r = 0; r < t.length; r += 1) t[r] instanceof se ? (s = t[r].value[0], o = t[r].value[1]) : (s = t[r], o = void 0), s instanceof c && ((0 === r || r + 1 === t.length) && void 0 === o || o instanceof ie) || v(), a = o ? o.toCSS(f) : 0 === r ? "0%" : "100%", l = s.alpha, n += '<stop offset="' + a + '" stop-color="' + s.toRGB() + '"' + (l < 1 ? ' stop-opacity="' + l + '"' : "") + "/>";
+                  return n += "</" + u + "Gradient><rect " + h + ' fill="url(#g)" /></svg>', n = encodeURIComponent(n), new fe(new he("'" + (n = "data:image/svg+xml," + n) + "'", n, !1, this.index, this.currentFileInfo), this.index, this.currentFileInfo)
               }
-          }), H.addMultiple(ht), t
+          }), Z.addMultiple(pt), t
       };
 
-  function pt(e, t) {
+  function dt(e, t) {
       var i, n = (t = t || {}).variables,
-          r = new q.Eval(t);
+          r = new z.Eval(t);
       "object" != typeof n || Array.isArray(n) || (n = Object.keys(n).map((function(e) {
           var t = n[e];
-          return t instanceof Ce.Value || (t instanceof Ce.Expression || (t = new Ce.Expression([t])), t = new Ce.Value([t])), new Ce.Declaration("@" + e, t, !1, null, 0)
-      })), r.frames = [new Ce.Ruleset(null, n)]);
-      var s, o, a = [new De.JoinSelectorVisitor, new De.MarkVisibleSelectorsVisitor(!0), new De.ExtendVisitor, new De.ToCSSVisitor({
+          return t instanceof _e.Value || (t instanceof _e.Expression || (t = new _e.Expression([t])), t = new _e.Value([t])), new _e.Declaration("@" + e, t, !1, null, 0)
+      })), r.frames = [new _e.Ruleset(null, n)]);
+      var s, o, a = [new Ue.JoinSelectorVisitor, new Ue.MarkVisibleSelectorsVisitor(!0), new Ue.ExtendVisitor, new Ue.ToCSSVisitor({
               compress: Boolean(t.compress)
           })],
           l = [];
@@ -4535,7 +4540,7 @@
           for (o.first(); s = o.get();) - 1 === a.indexOf(s) && -1 === l.indexOf(s) && s.run(i);
       return i
   }
-  var vt, dt = function() {
+  var mt, gt = function() {
           function e(e) {
               this.less = e, this.visitors = [], this.preProcessors = [], this.postProcessors = [], this.installedPlugins = [], this.fileManagers = [], this.iterator = -1, this.pluginCache = {}, this.Loader = new e.PluginLoader(e)
           }
@@ -4586,10 +4591,10 @@
               return this.fileManagers
           }, e
       }(),
-      mt = function(e, t) {
-          return !t && vt || (vt = new dt(e)), vt
+      yt = function(e, t) {
+          return !t && mt || (mt = new gt(e)), mt
       };
-  var gt, yt, bt = function(e) {
+  var bt, wt, xt = function(e) {
       var t = e.match(/^v(\d{1,2})\.(\d{1,2})\.(\d{1,2})(?:-([0-9A-Za-z-.]+))?(?:\+([0-9A-Za-z-.]+))?$/);
       if (!t) throw new Error("Unable to parse: " + e);
       return {
@@ -4601,7 +4606,7 @@
       }
   };
 
-  function wt(e, t) {
+  function St(e, t) {
       var i, n, o, a;
       o = function(e) {
           return function() {
@@ -4611,7 +4616,7 @@
               return t.prototype.toCSS = function(t) {
                   var i, n, s = {};
                   try {
-                      i = pt(this.root, t)
+                      i = dt(this.root, t)
                   } catch (e) {
                       throw new O(e, this.imports)
                   }
@@ -4774,8 +4779,8 @@
                               var t, i = e.filename,
                                   r = e.contents.replace(/^\uFEFF/, "");
                               c.currentDirectory = h.getPath(i), c.rewriteUrls && (c.rootpath = h.join(a.context.rootpath || "", h.pathDiff(c.currentDirectory, c.entryPath)), !h.isPathAbsolute(c.rootpath) && h.alwaysMakePathsAbsolute() && (c.rootpath = h.join(c.entryPath, c.rootpath))), c.filename = i;
-                              var o = new q.Parse(a.context);
-                              o.processImports = !1, a.contents[i] = r, (n.reference || s.reference) && (c.reference = !0), s.isPlugin ? (t = l.evalPlugin(r, o, a, s.pluginArgs, c)) instanceof O ? u(t, null, i) : u(null, t, i) : s.inline ? u(null, r, i) : !a.files[i] || a.files[i].options.multiple || s.multiple ? new Ue(o, a, c).parse(r, (function(e, t) {
+                              var o = new z.Parse(a.context);
+                              o.processImports = !1, a.contents[i] = r, (n.reference || s.reference) && (c.reference = !0), s.isPlugin ? (t = l.evalPlugin(r, o, a, s.pluginArgs, c)) instanceof O ? u(t, null, i) : u(null, t, i) : s.inline ? u(null, r, i) : !a.files[i] || a.files[i].options.multiple || s.multiple ? new Te(o, a, c).parse(r, (function(e, t) {
                                   u(e, t, i)
                               })) : u(null, a.files[i].root, i)
                           },
@@ -4823,8 +4828,8 @@
                       }))
                   }
                   var o, a = void 0,
-                      l = new mt(this, !t.reUsePluginManager);
-                  if (t.pluginManager = l, o = new q.Parse(t), t.rootFileInfo) a = t.rootFileInfo;
+                      l = new yt(this, !t.reUsePluginManager);
+                  if (t.pluginManager = l, o = new z.Parse(t), t.rootFileInfo) a = t.rootFileInfo;
                   else {
                       var u = t.filename || "input",
                           c = u.replace(/[^\/\\]*$/, "");
@@ -4843,26 +4848,26 @@
                       if (e.fileContent) {
                           if (i = e.fileContent.replace(/^\uFEFF/, ""), (t = l.Loader.evalPlugin(i, o, h, e.options, e.filename)) instanceof O) return r(t)
                       } else l.addPlugin(e)
-                  })), new Ue(o, h, a).parse(e, (function(e, i) {
+                  })), new Te(o, h, a).parse(e, (function(e, i) {
                       if (e) return r(e);
                       r(null, i, h, t)
                   }), t)
               };
               return n
           }(0, 0, a),
-          f = bt("v4.1.2"),
+          f = xt("v4.1.3"),
           p = {
               version: [f.major, f.minor, f.patch],
               data: l,
-              tree: Ce,
+              tree: _e,
               Environment: s,
-              AbstractFileManager: ke,
-              AbstractPluginLoader: _e,
+              AbstractFileManager: Ae,
+              AbstractPluginLoader: Me,
               environment: e,
-              visitors: De,
-              Parser: Ue,
-              functions: ft(e),
-              contexts: q,
+              visitors: Ue,
+              Parser: Te,
+              functions: vt(e),
+              contexts: z,
               SourceMapOutput: i,
               SourceMapBuilder: n,
               ParseTree: o,
@@ -4870,9 +4875,9 @@
               render: c,
               parse: h,
               LessError: O,
-              transformTree: pt,
+              transformTree: dt,
               utils: P,
-              PluginManager: mt,
+              PluginManager: yt,
               logger: r
           },
           v = function(e) {
@@ -4888,9 +4893,9 @@
               for (var g in d[m] = Object.create(null), u) d[m][g.toLowerCase()] = v(u[g]);
       return p.parse = p.parse.bind(d), p.render = p.render.bind(d), d
   }
-  var xt = {},
-      St = function() {};
-  St.prototype = Object.assign(new ke, {
+  var It = {},
+      Ct = function() {};
+  Ct.prototype = Object.assign(new Ae, {
       alwaysMakePathsAbsolute: function() {
           return !0
       },
@@ -4899,12 +4904,12 @@
       },
       doXHR: function(e, t, i, n) {
           var r = new XMLHttpRequest,
-              s = !gt.isFileProtocol || gt.fileAsync;
+              s = !bt.isFileProtocol || bt.fileAsync;
 
           function o(t, i, n) {
               t.status >= 200 && t.status < 300 ? i(t.responseText, t.getResponseHeader("Last-Modified")) : "function" == typeof n && n(t.status, e)
           }
-          "function" == typeof r.overrideMimeType && r.overrideMimeType("text/css"), yt.debug("XHR: Getting '" + e + "'"), r.open("GET", e, s), r.setRequestHeader("Accept", t || "text/x-less, text/css; q=0.9, */*; q=0.5"), r.send(null), gt.isFileProtocol && !gt.fileAsync ? 0 === r.status || r.status >= 200 && r.status < 300 ? i(r.responseText) : n(r.status, e) : s ? r.onreadystatechange = function() {
+          "function" == typeof r.overrideMimeType && r.overrideMimeType("text/css"), wt.debug("XHR: Getting '" + e + "'"), r.open("GET", e, s), r.setRequestHeader("Accept", t || "text/x-less, text/css; q=0.9, */*; q=0.5"), r.send(null), bt.isFileProtocol && !bt.fileAsync ? 0 === r.status || r.status >= 200 && r.status < 300 ? i(r.responseText) : n(r.status, e) : s ? r.onreadystatechange = function() {
               4 == r.readyState && o(r, i, n)
           } : o(r, i, n)
       },
@@ -4912,15 +4917,15 @@
           return !0
       },
       clearFileCache: function() {
-          xt = {}
+          It = {}
       },
       loadFile: function(e, t, i, n) {
           t && !this.isPathAbsolute(e) && (e = t + e), e = i.ext ? this.tryAppendExtension(e, i.ext) : e, i = i || {};
           var r = this.extractUrlParts(e, window.location.href).url,
               s = this;
           return new Promise((function(e, t) {
-              if (i.useFileCache && xt[r]) try {
-                  var n = xt[r];
+              if (i.useFileCache && It[r]) try {
+                  var n = It[r];
                   return e({
                       contents: n,
                       filename: r,
@@ -4935,7 +4940,7 @@
                   })
               }
               s.doXHR(r, i.mime, (function(t, i) {
-                  xt[r] = t, e({
+                  It[r] = t, e({
                       contents: t,
                       filename: r,
                       webInfo: {
@@ -4952,20 +4957,20 @@
           }))
       }
   });
-  var It = function(e, t) {
-          return gt = e, yt = t, St
+  var kt = function(e, t) {
+          return bt = e, wt = t, Ct
       },
-      Ct = function(e) {
+      _t = function(e) {
           this.less = e
       };
-  Ct.prototype = Object.assign(new _e, {
+  _t.prototype = Object.assign(new Me, {
       loadPlugin: function(e, t, i, n, r) {
           return new Promise((function(s, o) {
               r.loadFile(e, t, i, n).then(s).catch(o)
           }))
       }
   });
-  var kt = function(t, n, r) {
+  var At = function(t, n, r) {
           return {
               add: function(s, o) {
                   r.errorReporting && "html" !== r.errorReporting ? "console" === r.errorReporting ? function(e, t) {
@@ -5003,7 +5008,7 @@
               }
           }
       },
-      _t = {
+      Mt = {
           javascriptEnabled: !1,
           depends: !1,
           compress: !1,
@@ -5021,38 +5026,38 @@
           urlArgs: ""
       };
   if (window.less)
-      for (var At in window.less) window.less.hasOwnProperty(At) && (_t[At] = window.less[At]);
+      for (var Et in window.less) window.less.hasOwnProperty(Et) && (Mt[Et] = window.less[Et]);
   ! function(e, i) {
       t(i, n(e)), void 0 === i.isFileProtocol && (i.isFileProtocol = /^(file|(chrome|safari)(-extension)?|resource|qrc|app):/.test(e.location.protocol)), i.async = i.async || !1, i.fileAsync = i.fileAsync || !1, i.poll = i.poll || (i.isFileProtocol ? 1e3 : 1500), i.env = i.env || ("127.0.0.1" == e.location.hostname || "0.0.0.0" == e.location.hostname || "localhost" == e.location.hostname || e.location.port && e.location.port.length > 0 || i.isFileProtocol ? "development" : "production");
       var r = /!dumpLineNumbers:(comments|mediaquery|all)/.exec(e.location.hash);
       r && (i.dumpLineNumbers = r[1]), void 0 === i.useFileCache && (i.useFileCache = !0), void 0 === i.onReady && (i.onReady = !0), i.relativeUrls && (i.rewriteUrls = "all")
-  }(window, _t), _t.plugins = _t.plugins || [], window.LESS_PLUGINS && (_t.plugins = _t.plugins.concat(window.LESS_PLUGINS));
-  var Mt, Et, Pt, Rt = function(e, n) {
+  }(window, Mt), Mt.plugins = Mt.plugins || [], window.LESS_PLUGINS && (Mt.plugins = Mt.plugins.concat(window.LESS_PLUGINS));
+  var Pt, Rt, Ot, Vt = function(e, n) {
       var r = e.document,
-          s = wt();
+          s = St();
       s.options = n;
       var o = s.environment,
-          a = It(n, s.logger),
+          a = kt(n, s.logger),
           l = new a;
-      o.addFileManager(l), s.FileManager = a, s.PluginLoader = Ct,
+      o.addFileManager(l), s.FileManager = a, s.PluginLoader = _t,
           function(e, t) {
               t.logLevel = void 0 !== t.logLevel ? t.logLevel : "development" === t.env ? 3 : 1, t.loggers || (t.loggers = [{
                   debug: function(e) {
-                      t.logLevel >= 4 //&& console.log(e)
+                      t.logLevel >= 4 /*&& console.log(e)*/
                   },
                   info: function(e) {
-                      t.logLevel >= 3 //&& console.log(e)
+                      t.logLevel >= 3 /*&& console.log(e)*/
                   },
                   warn: function(e) {
-                      t.logLevel >= 2 //&& console.warn(e)
+                      t.logLevel >= 2 && console.warn(e)
                   },
                   error: function(e) {
-                      t.logLevel >= 1 //&& console.error(e)
+                      t.logLevel >= 1 && console.error(e)
                   }
               }]);
               for (var i = 0; i < t.loggers.length; i++) e.logger.addListener(t.loggers[i])
           }(s, n);
-      var u = kt(e, s, n),
+      var u = At(e, s, n),
           c = s.cache = n.cache || function(e, t, i) {
               var n = null;
               if ("development" !== t.env) try {
@@ -5095,7 +5100,7 @@
                   return e(), -1
               }
           };
-          H.addMultiple(t)
+          Z.addMultiple(t)
       }(s.environment), n.functions && s.functions.functionRegistry.addMultiple(n.functions);
       var h = /^text\/(x-)?less$/;
 
@@ -5192,11 +5197,12 @@
               }), t, n), v(n)
           }))
       }, s.refreshStyles = v, s
-  }(window, _t);
+  }(window, Mt);
 
-  function Ot(e) {
-      e.filename && console.warn(e), _t.async || Et.removeChild(Pt)
+  function Ft(e) {
+      e.filename && console.warn(e), Mt.async || Rt.removeChild(Ot)
   }
-  return window.less = Rt, _t.onReady && (/!watch/.test(window.location.hash) && Rt.watch(), _t.async || (Mt = "body { display: none !important }", Et = document.head || document.getElementsByTagName("head")[0], (Pt = document.createElement("style")).type = "text/css", Pt.styleSheet ? Pt.styleSheet.cssText = Mt : Pt.appendChild(document.createTextNode(Mt)), Et.appendChild(Pt)), Rt.registerStylesheetsImmediately(), Rt.pageLoadFinished = Rt.refresh("development" === Rt.env).then(Ot, Ot)), Rt
+  return window.less = Vt, Mt.onReady && (/!watch/.test(window.location.hash) && Vt.watch(), Mt.async || (Pt = "body { display: none !important }", Rt = document.head || document.getElementsByTagName("head")[0], (Ot = document.createElement("style")).type = "text/css", Ot.styleSheet ? Ot.styleSheet.cssText = Pt : Ot.appendChild(document.createTextNode(Pt)), Rt.appendChild(Ot)), Vt.registerStylesheetsImmediately(), Vt.pageLoadFinished = Vt.refresh("development" === Vt.env).then(Ft, Ft)), Vt
 }));
-//# sourceMappingURL=less.min.js.map
+
+// sourceMappingURL=less.min.js.map
