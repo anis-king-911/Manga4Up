@@ -1,0 +1,92 @@
+@media (max-width:991px) {
+
+  html {
+      font-size: 55%;
+  }
+
+  header .header-1 {
+      padding: 2rem;
+  }
+
+  section, footer {
+      padding: 3rem 2rem;
+  }
+
+}
+
+@media (max-width:768px) {
+
+  html {
+      scroll-padding-top: 0;
+  }
+
+  body {
+      padding-bottom: 6rem;
+  }
+
+  header .header-2 {
+      display: none;
+  }
+
+  .bottom-navbar {
+      display: block;
+  }
+
+  .SearchBtn {
+      display: inline-block;
+  }
+
+  header .header-1 {
+      box-shadow: var(--box-shadow);
+      position: relative;
+  }
+
+  header .header-1 .SearchForm {
+      position: absolute;
+      top: -115%;
+      right: 2rem;
+      z-index: 9;
+      width: 90%;
+      box-shadow: var(--box-shadow);
+  }
+
+  header .header-1 .SearchForm.active {
+      top: 115%;
+  }
+
+  .home .row .content {
+      text-align: center;
+  }
+
+  .home .row .content h3 {
+      font-size: 3.5rem;
+  }
+
+  .BooksContainer,
+  .BlogsContainer {
+      display: grid;
+      grid-gap: 8px;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      margin: 0 auto;
+  }
+
+}
+
+@media (max-width:450px) {
+
+  html {
+      font-size: 50%;
+  }
+
+  .BooksContainer,
+  .BlogsContainer {
+      display: grid;
+      grid-gap: 8px;
+      grid-template-columns: 1fr;
+      width: 100%;
+      margin: 0 auto;
+  }
+
+
+}
