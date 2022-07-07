@@ -12,16 +12,18 @@ window.onload = () =>{
   }else{
     document.querySelector('header .header-2').classList.remove('active');
   }
+
+  fadeOut();
 }
 
 function SearchFilter() {
   var input, filter, ul, li, a, i, txtValue;
   input = document.querySelector(".SearchBox");
   filter = input.value.toUpperCase();
-  ul = document.querySelector(".BooksContainer");
+  ul = document.querySelector(".BooksListContainer");
   li = ul.querySelectorAll("article");
   for (i = 0; i < li.length; i++) {
-      a = li[i].querySelectorAll("article .Content .Title")[0];
+      a = li[i].querySelectorAll("article .Content h3")[0];
       txtValue = a.textContent || a.innerText;
       if (txtValue.toUpperCase().indexOf(filter) > -1) {
           li[i].style.display = "";
@@ -31,6 +33,13 @@ function SearchFilter() {
   }
 }
 
+function loader(){
+  document.querySelector('.loading').classList.add('active');
+}
+
+function fadeOut(){
+  setTimeout(loader, 4000);
+}
 
 import Routes from "./modules/Routes.js";
 const SearchForm = document.querySelector('.SearchForm');
@@ -38,6 +47,7 @@ const SearchBtn = document.querySelector('.SearchBtn');
 const SearchBox = document.querySelector('.SearchBox');
 const loadMore = document.querySelector('.loadMore');
 const loading = document.querySelector('.loading');
+
 let WindowREF = window.location.href.split('/').pop();
 let WindowPATH = window.location.pathname;
 let size = 30, d = 6, blog_size = 3;
@@ -47,7 +57,7 @@ let PathNames = [
   '/Page/Manga/index.html',
   '/Page/Blog/index.html',
   '/Page/Blogs/index.html',
-  'Page/Gallery/index.html'
+  '/Page/Contact/index.html',
   ];
 
 function LoadPage() {
@@ -61,7 +71,8 @@ function LoadPage() {
       }
     })
     
-    if(WindowPATH === '/Page/Blog/' && WindowREF === '' || WindowPATH === '/Page/Manga/' && WindowREF === '') {
+    if(WindowPATH === '/Page/Blog/' && WindowREF === ''
+    || WindowPATH === '/Page/Manga/' && WindowREF === '') {
       window.location.assign('../List/');
     }
     
@@ -70,6 +81,7 @@ function LoadPage() {
     } else if (WindowPATH === '/Page/List/') {
       Routes.GetAllList()
 
+      /* OPEN SEARCH INPUT */
 
       SearchBtn.onclick = () =>{
         SearchForm.classList.toggle('active');
@@ -81,6 +93,7 @@ function LoadPage() {
         SearchForm.classList.remove('active');
       }
 
+      /* DO THE SEARCH */
 
       SearchBox.addEventListener('keyup', ()=> {
         SearchFilter();
@@ -99,19 +112,9 @@ function LoadPage() {
       Routes.GetAllBlogs()
     } else if(WindowPATH === '/Page/Blog/') {
       Routes.GetOneBlog(WindowREF)
-    } else if(WindowPATH === '/Page/Gallery/') {
-      Routes.GetGallery()
     }
   }, 600)
 }
 
 LoadPage();
-window.addEventListener('load', ()=> {
-  setTimeout(()=> {
-    loading.classList.add('hide')
-    
-    loading.addEventListener('transitionend', ()=> {
-      loading.style.display = 'none';
-    })
-  }, 3000)
-})
+//window.addEventListener('load', ()=> {})

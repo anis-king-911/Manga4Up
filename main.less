@@ -1,7 +1,5 @@
-/* BASIC STYLE *
+/* BASIC STYLE */
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
-*/
 * {
   font-family: 'Poppins', sans-serif;
   margin: 0;
@@ -77,7 +75,7 @@ section h1 span {
 }
 
 /* LOADING CSS */
-
+/*
 .loading {
   width: 100%;
   height: 100vh;
@@ -100,8 +98,32 @@ section h1 span {
   opacity: 0;
   visibility: hidden;
 }
+*/
+.loading {
+  position: fixed;
+  top:0; left: 0;
+  height:100%;
+  width: 100%;
+  z-index: 10000;
+  background:#f7f7f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading.active {
+  display: none;
+}
+
+.loading img {
+  height:10rem;
+}
 
 /* HEADER CSS */
+
+header.auth {
+  border-bottom: .1rem solid rgba(0, 0, 0, .1);
+}
 
 header .header-1 {
   background: #fff;
@@ -226,7 +248,7 @@ header .header-2.active {
   text-align: center;
 }
 .Banner .row .content h3 {
-  color: var(--black);
+  color: #444;
   font-size: 4.5rem;
 }
 .Banner .row .content p {
@@ -243,7 +265,6 @@ header .header-2.active {
   grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
   gap: 1.5rem;
 }
-
 .IconsContainer .icons {
   display: flex;
   align-items: center;
@@ -252,18 +273,15 @@ header .header-2.active {
   border: 1px solid #000;
   border-radius: 4px;
 }
-
 .IconsContainer .icons i {
   font-size: 3.5rem;
   color: #27ae60;
 }
-
 .IconsContainer .icons h3 {
   font-size: 2.2rem;
   color: #444;
   padding-bottom: .5rem;
 }
-
 .IconsContainer .icons p {
   font-size: 1.4rem;
   color: #666;
@@ -330,6 +348,51 @@ header .header-2.active {
   text-decoration: line-through;
 }
 
+/* LIST BOOKS CSS */
+
+.BooksListContainer {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+  margin: 0 auto;
+}
+.BooksListContainer article {
+  display: flex;
+  align-items:center;
+  gap:1.5rem;
+  padding:2rem 1rem;
+  border:.1rem solid rgba(0,0,0,.1);
+  margin:1rem 0;
+  border-radius: 4px;
+}
+.BooksListContainer article:hover {
+  border:.1rem solid #444;
+}
+.BooksListContainer article .Cover img {
+  height:15rem;
+  border-radius: 4px;
+}
+.BooksListContainer article .Content {
+  width: 100%;
+}
+.BooksListContainer article .Content h3 {
+  font-size: 2.6rem;
+  color:#444;
+}
+.BooksListContainer article .Content .Info{
+  font-size: 2rem;
+  color:#444;
+  padding-bottom: .5rem;
+}
+.BooksListContainer article .Content .Info span{
+  font-size: 1.5rem;
+  color: #666;
+}
+.BooksListContainer article .Content .float {
+  float: right;
+}
+
 /* DOWNLOAD LINKS MODAL BOX */
 
 article .Modal {
@@ -375,7 +438,7 @@ article .Modal .Content .close {
 }
 article .Modal .Content .Title {
   font-size: 2.4rem;
-  color: var(--black);
+  color: #444;
   font-weight: bold;
   transition: 600ms;
   width: 86%;
@@ -432,19 +495,42 @@ article .Modal .Content .Info {
 .BlogContainer .Cover img {
   width: 100%;
 }
-
 .BlogContainer .Content p {
   font-size: 20px;
   text-align: right;
 }
 
-/* COMING SOON PAGE */
+/* CONTACT US FORM CSS */
 
-.ComingSoon {
-  width: 100%;
+.Contact form{
+  margin:0 auto;
+  background-color: #f5f5f5;
+  border-radius: .5rem;
+  border:.1rem solid #333;
+  padding:2rem;
+  max-width: 50rem;
+  margin:0 auto;
   text-align: center;
-  font-size: 2.6rem;
-  color: #444;
+}
+.Contact form h3{
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  color:#333;
+}
+.Contact form .box{
+  margin:1rem 0;
+  width: 100%;
+  border:.1rem solid #333;
+  background-color: #fff;
+  padding:1.2rem 1.4rem;
+  font-size: 1.8rem;
+  color:#333;
+  border-radius: .5rem;
+}
+.Contact form textarea{
+  height: 20rem;
+  resize: none;
 }
 
 /* FOOTER SECTION */
@@ -505,10 +591,7 @@ footer .credit span {
   color: #27ae60;
 }
 
-
-
 /* ANIMATION */
-
 
 @keyframes Loading {
   0% {

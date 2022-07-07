@@ -22,19 +22,16 @@ const HOME_BOOK = (id, arg)=> {
   return div;
 }
 const LIST_BOOK = (arg)=> {
-  let div =
+  let div = 
   `
-<article class="Book" id="${arg['Time']}">
+<article>
   <div class="Cover">
-    <img src="${arg['Volume Cover']}" alt="" loading="lazy"/>
+    <img src="${arg['Volume Cover']}" alt="">
   </div>
   <div class="Content">
-  <div class="Title">${arg['Manga Title']}</div>
-  <div class="Info">${arg['Volume Number']} : عدد المجلدات</div>
-    
-    <a href="../Manga/#/${arg['Manga Title'].replaceAll(' ', '_')}" class="btn">
-      صفحة المانجا
-    </a>
+    <h3>${arg['Manga Title']}</h3>
+    <div class="Info">Volume Count: <span>${arg['Volume Number']}</span></div>
+    <a href="../Manga/#/${arg['Manga Title'].replaceAll(' ', '_')}" class="btn float"> صفحة المانجا </a>
   </div>
 </article>
   `;

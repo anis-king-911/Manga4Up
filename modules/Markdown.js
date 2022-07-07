@@ -1,3 +1,4 @@
+const WindowPATH = window.location.pathname;
 /* -------------------------------------------
 // DEFAULT INPUT AND OUTPUT AREA
 let textarea = document.querySelector( '#input-area' );
@@ -72,7 +73,7 @@ function setInputArea( inputElement ) {
 function setOutputArea( outputElement ) {
 	outputArea = outputElement;
 }
-
+*/
 function insertText( textarea, syntax, placeholder = 'demo', selectionStart = 0, selectionEnd = 0 ) {
 	// Current Selection
 	const currentSelectionStart = textarea.selectionStart;
@@ -98,15 +99,33 @@ function insertText( textarea, syntax, placeholder = 'demo', selectionStart = 0,
 		textarea.selectionEnd = currentSelectionEnd + selectionStart + selectedText.length;
 	}
 }
-
+/*
 function output( lines ) {
 	outputArea.innerHTML = lines;
 }
+*/
+const textarea = document.querySelector('.UploadBlog textarea');
+const h1 = document.querySelector('.h1')
+const link = document.querySelector('.link')
+const bold = document.querySelector('.bold')
 
+if(WindowPATH === '/Page/Admin/' || WindowPATH === '/Page/Admin/index.html') {
+
+  h1.addEventListener('click', ()=> {
+    insertText( textarea, '#', 'عنوان', 1, 9 )
+  })
+  link.addEventListener('click', ()=> {
+    insertText( textarea, '[](http://...)', 'رابط', 1, 9 )
+  })
+  bold.addEventListener('click', ()=> {
+  	insertText( textarea, '****', 'بولد', 2, 6 )
+  })
+
+}
 // -------------------------------------------
 // PARSER
 // -------------------------------------------
-*/
+
 export function parse( content ) {
 	// Regular Expressions
 	const h1 = /^#{1}[^#].*$/gm;

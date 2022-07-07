@@ -1,10 +1,11 @@
 import {
   initializeApp
-} from "https://www.gstatic.com/firebasejs/9.8.3/firebase-app.js";
+} from "./cdn/firebase@9.8.4/firebase-app.js";
 import {
   getDatabase, ref, child, onValue,
-  query, orderByChild, limitToLast
-} from "https://www.gstatic.com/firebasejs/9.8.3/firebase-database.js";
+  query, orderByChild, limitToLast,
+  set, update, remove
+} from "./cdn/firebase@9.8.4/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAwI_lwV52VuKJYjeSID811WEv5u2AF70w",
@@ -22,5 +23,5 @@ const database = getDatabase(app);
 let path = 'Manga4Up/', blog = 'blog/', order = 'Volume Data/Time';
 let list = [], uniqueIds = [];
 
-export {database, ref, child, onValue, query, orderByChild, limitToLast}
+export {database, ref, child, onValue, query, orderByChild, limitToLast, set, update, remove}
 export {path, blog, order, list, uniqueIds}

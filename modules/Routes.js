@@ -1,13 +1,17 @@
 import {database, ref, child, onValue, query, orderByChild, limitToLast} from './Firebase.js';
 import {path, blog, order, list, uniqueIds} from './Firebase.js';
-import { HOME_BOOK, LIST_BOOK, RECENT_BOOK, HOME_BLOG, LIST_BLOG, CONTENT_BLOG } from './Components.js';
+import {HOME_BOOK, LIST_BOOK, RECENT_BOOK, HOME_BLOG, LIST_BLOG, CONTENT_BLOG} from './Components.js';
 
+const PageTitle = document.querySelector('section h1 span');
 const BooksContainer = document.querySelector('.BooksContainer');
+const BooksListContainer = document.querySelector('.BooksListContainer');
 const BlogsContainer = document.querySelector('.BlogsContainer');
 const BlogContainer = document.querySelector('.BlogContainer');
-let count = 5;
 
 export default class Routes {
+  
+  /* RETRIEVING DATA */
+  
   static GetMainPage(vn, bn) {
     console.log('Home Page')
     
@@ -49,7 +53,7 @@ export default class Routes {
   
     onValue(databaseRef, (snapshot)=> {
       list.splice(0, list.length)
-      BooksContainer.innerHTML = ''
+      BooksListContainer.innerHTML = ''
       snapshot.forEach((snap)=> {
         
         const value = snap.val();
@@ -71,7 +75,7 @@ export default class Routes {
       });
       
       unique.map((manga)=> {
-        BooksContainer.innerHTML = LIST_BOOK(manga) + BooksContainer.innerHTML;
+        BooksListContainer.innerHTML = LIST_BOOK(manga) + BooksListContainer.innerHTML;
       })
     });
   }
@@ -113,7 +117,7 @@ export default class Routes {
       })
     })
     
-    document.querySelector('section h1 span').textContent = name.replaceAll('_', ' ');
+    PageTitle.textContent = name.replaceAll('_', ' ');
     document.querySelector('title').textContent = `Manga4Up | ${name.replaceAll('_', ' ')}`;
   }
   static GetAllBlogs() {
@@ -144,17 +148,9 @@ export default class Routes {
       const data = snapshot.val();
       
       BlogContainer.innerHTML = CONTENT_BLOG(data) + BlogContainer.innerHTML;
-      document.querySelector('section h1 span').textContent = data.Title;
+      PageTitle.textContent = data.Title;
     })
-  }
-  static GetGallery() {
-    setInterval(()=> {
-      document.querySelector('.count').innerHTML = count--;
-    }, 1000)
-
-    setTimeout(()=> {
-      window.location.assign('../../')
-    }, 6100)
   }
 }
 
+window.Routes = Routes;

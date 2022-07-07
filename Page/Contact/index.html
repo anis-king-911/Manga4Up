@@ -5,19 +5,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title> Manga4Up | Available Manga List </title>
+  <title> Manga4Up | Contact Us </title>
 
-  <link rel="shortcut icon" href="../../src/image/monument.png" type="image/x-icon">
-  <link rel="stylesheet/less" type="text/css" href="../../main.less">
-  <link rel="stylesheet/less" type="text/css" href="../../media.less">
-  <script src="../../modules/Alpinejs.min@3.10.2.js" defer></script>
-  <script src="../../modules/Less@4.js"></script>
+  <link rel="shortcut icon" href="/src/image/monument.png" type="image/x-icon">
+  <link rel="stylesheet/less" type="text/css" href="/main.less">
+  <link rel="stylesheet/less" type="text/css" href="/media.less">
+  <script src="/modules/Alpinejs.min@3.10.2.js" defer></script>
+  <script src="/modules/Less@4.js"></script>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <body>
 
-<!-- LOADING SECTION -->
+<!-- LOADING SECTION -->  
 
 <div class="loading">
   <img src="../../src/image/loader-img.gif" alt="">
@@ -28,23 +28,17 @@
 <header>
 
   <div class="header-1">
-    <a href="../../" class="logo"> <i class="fas fa-book"></i> Mega4Up </a>
-
-    <form class="SearchForm">
-      <input type="search" class="SearchBox" placeholder="search here..." >
-      <label for="search-box" class="fas fa-search"></label>
-    </form>
+    <a href="./" class="logo"> <i class="fas fa-book"></i> Mega4Up </a>
 
     <div class="icons">
-      <i class="fas fa-search SearchBtn"></i>
-      <a href="../Contact/"><i class="fa-solid fa-address-book"></i></a>
+      <a href="./"><i class="fa-solid fa-address-book"></i></a>
     </div>
   </div>
 
   <div class="header-2">
     <nav class="navbar">
       <a href="../Recent/"> أجدد المنشورات </a>
-      <a href="./"> القائمة المتوفرة </a>
+      <a href="../List/"> القائمة المتوفرة </a>
       <a href="../../"> الصفحة الرئيسية </a>
       </nav>
   </div>
@@ -54,17 +48,22 @@
 <!-- BOTTOM NAVBAR SECTION -->
 
 <nav class="bottom-navbar">
-  <a href="../../" class="fas fa-home"></a>
-  <a href="./" class="fas fa-list"></a>
-  <a href="../Recent/" class="fa-solid fa-paste"></a>
+  <a href="./" class="fas fa-home"></a>
+  <a href="./Page/List/" class="fas fa-list"></a>
+  <a href="./Page/Recent/" class="fa-solid fa-paste"></a>
 </nav>
 
-<!-- BOOKS SECTION -->
+<!-- CONTACT US FORM SECTION -->
 
-<section>
-  <h1> <span> قائمة المانجا المتوفرة </span> </h1>
-  <div class="BooksListContainer"></div>
-</section>
+  <section class="Contact">
+    <form>
+      <h3> أخبرنا بشيئ </h3>
+      <input type="text" name="name" required placeholder="enter your name" class="box">
+      <input type="email" name="email" required placeholder="enter your email" class="box">
+      <textarea name="message" class="box" placeholder="enter your message" id="" cols="30" rows="10"></textarea>
+      <input type="submit" value="send message" name="send" class="btn">
+    </form>
+  </section>
 
 <!-- FOOTER SECTION -->
 
@@ -101,6 +100,6 @@
 </footer>
 
 
-<script type="module" src="../../main.js"></script>
+<script type="module" src="/main.js"></script>
 </body>
 </html>
