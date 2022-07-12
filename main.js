@@ -13,7 +13,6 @@ window.onload = () =>{
     document.querySelector('header .header-2').classList.remove('active');
   }
 
-  fadeOut();
 }
 
 function SearchFilter() {
@@ -33,20 +32,20 @@ function SearchFilter() {
   }
 }
 
-function loader(){
-  document.querySelector('.loading').classList.add('active');
-}
-
-function fadeOut(){
-  setTimeout(loader, 4000);
-}
-
 import Routes from "./modules/Routes.js";
+const ContactForm = document.querySelector('.Contact form');
 const SearchForm = document.querySelector('.SearchForm');
 const SearchBtn = document.querySelector('.SearchBtn');
 const SearchBox = document.querySelector('.SearchBox');
 const loadMore = document.querySelector('.loadMore');
 const loading = document.querySelector('.loading');
+
+const Container = document.querySelector('.BooksContainer') ||
+                  document.querySelector('.BooksListContainer') ||
+                  document.querySelector('.BlogsContainer') ||
+                  document.querySelector('.BlogContainer') ||
+                  document.querySelector('.Contact');
+                  
 
 let WindowREF = window.location.href.split('/').pop();
 let WindowPATH = window.location.pathname;
@@ -112,9 +111,34 @@ function LoadPage() {
       Routes.GetAllBlogs()
     } else if(WindowPATH === '/Page/Blog/') {
       Routes.GetOneBlog(WindowREF)
+    } else if(WindowPATH === '/Page/Contact/') {
+      ContactForm.addEventListener('submit', (event)=> {
+        event.preventDefault();
+
+        let data = {
+          email: ContactForm.email.value,
+          username: ContactForm.username.value,
+          content: ContactForm.message.value,
+          date: Date.now()
+        }
+
+        Routes.SubmitContactForm(data);
+        setTimeout(()=> {
+          ContactForm.reset();
+        }, 600);
+      })
     }
   }, 600)
 }
 
 LoadPage();
-//window.addEventListener('load', ()=> {})
+
+let interval = setInterval(() => {
+  if (Container.childNodes.length === 0) {
+    console.log('✅ Element is empty');
+  } else {
+    console.log('⛔️ Element is NOT empty');
+    clearInterval(interval);
+    loading.classList.add('active')
+  }
+}, 1000)

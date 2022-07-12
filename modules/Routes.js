@@ -1,5 +1,6 @@
 import {database, ref, child, onValue, query, orderByChild, limitToLast} from './Firebase.js';
-import {path, blog, order, list, uniqueIds} from './Firebase.js';
+import {push, set} from './Firebase.js';
+import {path, pathList, blog, order, orderList, list, uniqueIds} from './Firebase.js';
 import {HOME_BOOK, LIST_BOOK, RECENT_BOOK, HOME_BLOG, LIST_BLOG, CONTENT_BLOG} from './Components.js';
 
 const PageTitle = document.querySelector('section h1 span');
@@ -13,8 +14,6 @@ export default class Routes {
   /* RETRIEVING DATA */
   
   static GetMainPage(vn, bn) {
-    console.log('Home Page')
-    
     // Main DataBase
     const databaseRef = ref(database, path);
     const databaseOrder = query(databaseRef, orderByChild(order));
@@ -47,8 +46,7 @@ export default class Routes {
     
   }
   static GetAllList() {
-    console.log('Available Manga List')
-    
+    /*
     const databaseRef = ref(database, path);
   
     onValue(databaseRef, (snapshot)=> {
@@ -78,10 +76,23 @@ export default class Routes {
         BooksListContainer.innerHTML = LIST_BOOK(manga) + BooksListContainer.innerHTML;
       })
     });
+    */
+
+    const databaseRef = ref(database, pathList);
+    const databaseOrder = query(databaseRef, orderByChild(orderList));
+
+    onValue(databaseOrder, (snapshot)=> {
+      BooksListContainer.innerHTML = '';
+
+      snapshot.forEach((snap)=> {
+        const key = snap.key;
+        const data = snap.val();
+
+        BooksListContainer.innerHTML += LIST_BOOK(data);
+      })
+    })
   }
   static GetRecentData(n) {
-    console.log('Recent Uploaded')
-    
     const databaseRef = ref(database, path);
     const databaseOrder = query(databaseRef, orderByChild(order));
     const databaseLimit = query(databaseOrder, limitToLast(n));
@@ -149,6 +160,21 @@ export default class Routes {
       
       BlogContainer.innerHTML = CONTENT_BLOG(data) + BlogContainer.innerHTML;
       PageTitle.textContent = data.Title;
+    })
+  }
+  static SubmitContactForm(arg) {
+    const databaseRef = ref(database, 'Contacts/');
+    const databasePush = push(databaseRef);
+
+    set(databasePush, {
+      Email: arg.email,
+      UserName: arg.username,
+      Message: arg.content,
+      Time: arg.date
+    }).then(()=> {
+      console.log('done')
+    }).catch((error)=> {
+      console.log(error)
     })
   }
 }

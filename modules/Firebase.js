@@ -4,7 +4,7 @@ import {
 import {
   getDatabase, ref, child, onValue,
   query, orderByChild, limitToLast,
-  set, update, remove
+  push, set, update, remove
 } from "./cdn/firebase@9.8.4/firebase-database.js";
 
 const firebaseConfig = {
@@ -20,8 +20,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-let path = 'Manga4Up/', blog = 'blog/', order = 'Volume Data/Time';
+let path = 'Manga4Up/',pathList = 'List/', blog = 'blog/';
+let order = 'Volume Data/Time', orderList = 'Title';
 let list = [], uniqueIds = [];
 
-export {database, ref, child, onValue, query, orderByChild, limitToLast, set, update, remove}
-export {path, blog, order, list, uniqueIds}
+export {database, ref, child, onValue, query, orderByChild, limitToLast, push, set, update, remove}
+export {path, pathList, blog, order, orderList, list, uniqueIds}

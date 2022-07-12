@@ -26,12 +26,13 @@ const LIST_BOOK = (arg)=> {
   `
 <article>
   <div class="Cover">
-    <img src="${arg['Volume Cover']}" alt="">
+    <img src="${arg['Cover']}" alt="">
   </div>
   <div class="Content">
-    <h3>${arg['Manga Title']}</h3>
-    <div class="Info">Volume Count: <span>${arg['Volume Number']}</span></div>
-    <a href="../Manga/#/${arg['Manga Title'].replaceAll(' ', '_')}" class="btn float"> صفحة المانجا </a>
+    <h3>${arg['Title']}</h3>
+    <div class="Info">Volume Count: <span>${arg['Count']}</span></div>
+    <div class="Info">Manga State: <span>${arg['State']}</span></div>
+    <a href="../Manga/#/${arg['Title'].replaceAll(' ', '_')}" class="btn float"> صفحة المانجا </a>
   </div>
 </article>
   `;
