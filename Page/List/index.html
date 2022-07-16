@@ -7,56 +7,55 @@
 
   <title> Manga4Up | Available Manga List </title>
 
-  <link rel="shortcut icon" href="../../src/image/monument.png" type="image/x-icon">
-  <link rel="stylesheet/less" type="text/css" href="../../main.less">
-  <link rel="stylesheet/less" type="text/css" href="../../media.less">
-  <script src="../../modules/Alpinejs.min@3.10.2.js" defer></script>
-  <script src="../../modules/Less@4.js"></script>
-
+  <link rel="shortcut icon" href="/src/image/monument.png" type="image/x-icon">
+  <link rel="stylesheet/less" type="text/css" href="/main.less">
+  <link rel="stylesheet/less" type="text/css" href="/media.less">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+  <script src="/modules/Alpinejs@3.10.2/cdn.js" defer></script>
+  <script src="/modules/Less@4/cdn.js"></script>
+  <script src="/main.js" type="module" ></script>
 </head>
 <body>
 
 <!-- LOADING SECTION -->
 
 <div class="loading">
-  <img src="../../src/image/loader-img.gif" alt="">
+  <img src="/src/image/loader-img.gif" alt="">
 </div>
 
 <!-- HEADER SECTION -->
 
 <header>
-
   <div class="header-1">
-    <a href="../../" class="logo"> <i class="fas fa-book"></i> Mega4Up </a>
-
+    <a href="/" class="logo"> <i class="fas fa-book"></i> Mega4Up </a>
+  
     <form class="SearchForm">
       <input type="search" class="SearchBox" placeholder="search here..." >
       <label for="search-box" class="fas fa-search"></label>
     </form>
-
+  
     <div class="icons">
       <i class="fas fa-search SearchBtn"></i>
-      <a href="../Contact/"><i class="fa-solid fa-address-book"></i></a>
+      <a href="/Page/Contact/"><i class="fa-solid fa-address-book"></i></a>
     </div>
   </div>
-
+  
   <div class="header-2">
     <nav class="navbar">
-      <a href="../Recent/"> أجدد المنشورات </a>
-      <a href="./"> القائمة المتوفرة </a>
-      <a href="../../"> الصفحة الرئيسية </a>
-      </nav>
+      <a href="/Page/Recent/"> أجدد المنشورات </a>
+      <a href="/Page/List/"> القائمة المتوفرة </a>
+      <a href="/"> الصفحة الرئيسية </a>
+    </nav>
   </div>
-
 </header>
 
 <!-- BOTTOM NAVBAR SECTION -->
 
 <nav class="bottom-navbar">
-  <a href="../../" class="fas fa-home"></a>
-  <a href="./" class="fas fa-list"></a>
-  <a href="../Recent/" class="fa-solid fa-paste"></a>
+  <a href="/" class="fas fa-home"></a>
+  <a href="/Page/List/" class="fas fa-list"></a>
+  <a href="/Page/Recent/" class="fa-solid fa-paste"></a>
 </nav>
 
 <!-- BOOKS SECTION -->
@@ -69,7 +68,6 @@
 <!-- FOOTER SECTION -->
 
 <footer>
-
   <div class="box-container">
 
     <div class="box">
@@ -79,7 +77,7 @@
       <a href="#"> <i class="fa-brands fa-google-play"></i> ZArchiver </a>
       <a href="#"> <i class="fa-brands fa-google-play"></i> Tachiyomi </a>
     </div>
-
+  
     <div class="box">
       <h3> مصادر </h3>
       <a href="https://onma.me/" target="_blank"> <i class="fas fa-arrow-right"></i> onma.me </a>
@@ -87,20 +85,18 @@
       <a href="https://gmanga.me/" target="_blank"> <i class="fas fa-arrow-right"></i> gmanga.me </a>
       <a href="https://3asq.org/" target="_blank"> <i class="fas fa-arrow-right"></i> 3asq.org </a>
     </div>
-
+  
     <div class="box"></div>
-
+  
     <div class="box">
       <h3> روابط </h3>
       <a href=""> <i class="fa-solid fa-hand-holding-hand"></i> ! لمن يريد دعمي  </a>
     </div>
       
   </div>
-
+  
   <div class="credit"> created by <span>Anis Kin</span> | all rights reserved! </div>
 </footer>
 
-
-<script type="module" src="../../main.js"></script>
 </body>
 </html>
