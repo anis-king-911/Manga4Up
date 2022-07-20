@@ -40,6 +40,7 @@ const loadMore = document.querySelector('.loadMore');
 const loading = document.querySelector('.loading');
 
 const Container = document.querySelector('.BooksContainer') ||
+  document.querySelector('.RecentBooksContainer') ||
   document.querySelector('.BooksListContainer') ||
   document.querySelector('.BlogsContainer') ||
   document.querySelector('.BlogContainer') ||
@@ -48,7 +49,8 @@ const Container = document.querySelector('.BooksContainer') ||
 let WindowREF = window.location.href.split('/').pop();
 let WindowPATH = window.location.pathname;
 let size = 30,
-  d = 6,
+  d = 4,
+  z= 6,
   blog_size = 3;
 let PathNames = [
   '/Page/List/index.html',
@@ -100,7 +102,7 @@ function LoadPage() {
     Routes.GetRecentData(size)
 
     loadMore.addEventListener('click', () => {
-      size = size + d;
+      size = size + z;
 
       Routes.GetRecentData(size)
     })

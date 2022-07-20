@@ -1,0 +1,50 @@
+.BlogsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 4px;
+}
+.BlogsContainer article {
+  margin: 2rem 0;
+  border:  .1rem solid rgba(0, 0, 0, .1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.BlogsContainer article:hover {
+  border: .1rem solid #444;
+}
+.BlogsContainer article .Cover {
+  height: 25rem;
+  width: 100%;
+  overflow: hidden;
+}
+.BlogsContainer article .Cover img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+.BlogsContainer article:hover .Cover img {
+  transform: scale(1.1);
+}
+.BlogsContainer article .Content {
+  padding: 1.5rem;
+}
+.BlogsContainer article .Content h3 {
+  font-size: 2.2rem;
+  color: #444;
+}
+.BlogsContainer article .Content p {
+  font-size: 1.4rem;
+  color: #666;
+  padding: 1rem 0;
+  line-height: 2;
+}
+
+/**************************************/
+
+.BlogContainer .Cover img {
+  width: 100%;
+}
+.BlogContainer .Content p {
+  font-size: 20px;
+  text-align: right;
+}

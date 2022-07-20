@@ -7,6 +7,7 @@ import Toast from "/modules/Notification.js"
 
 const PageTitle = document.querySelector('section h1 span');
 const BooksContainer = document.querySelector('.BooksContainer');
+const RecentBooksContainer = document.querySelector('.RecentBooksContainer');
 const BooksListContainer = document.querySelector('.BooksListContainer');
 const BlogsContainer = document.querySelector('.BlogsContainer');
 const BlogContainer = document.querySelector('.BlogContainer');
@@ -17,18 +18,17 @@ export default class Routes {
   
   static GetMainPage(vn, bn) {
     // Main DataBase
-    const databaseRef = ref(database, path);
-    const databaseOrder = query(databaseRef, orderByChild(order));
-    const databaseLimit = query(databaseOrder, limitToLast(vn));
+    const databaseRef = ref(database, pathList);
+    //const databaseOrder = query(databaseRef, orderByChild(order));
+    const databaseLimit = query(databaseRef, limitToLast(vn));
     
     onValue(databaseLimit, (snapshot)=> {
       BooksContainer.innerHTML = ''
       snapshot.forEach((snap)=> {
         const key = snap.key;
-        const val = snap.val();
-        const data = val['Volume Data'];
+        const data = snap.val();
         
-        BooksContainer.innerHTML = HOME_BOOK(key, data) + BooksContainer.innerHTML;
+        BooksContainer.innerHTML = HOME_BOOK(data) + BooksContainer.innerHTML;
       })
     })
     
@@ -69,14 +69,14 @@ export default class Routes {
     const databaseLimit = query(databaseOrder, limitToLast(n));
     
     onValue(databaseLimit, (snapshot)=> {
-      BooksContainer.innerHTML = '';
+      RecentBooksContainer.innerHTML = '';
       console.log(snapshot.size)
       snapshot.forEach((snap)=> {
         const key = snap.key;
         const val = snap.val();
         const data = val['Volume Data'];
         
-        BooksContainer.innerHTML = RECENT_BOOK(key, data) + BooksContainer.innerHTML;
+        RecentBooksContainer.innerHTML = RECENT_BOOK(data) + RecentBooksContainer.innerHTML;
       })
     })
   }
@@ -87,14 +87,14 @@ export default class Routes {
     const databaseOrder = query(databaseRef, orderByChild(order));
     
     onValue(databaseOrder, (snapshot)=> {
-      BooksContainer.innerHTML = ''
+      RecentBooksContainer.innerHTML = ''
       snapshot.forEach((snap)=> {
         const key = snap.key;
         const val = snap.val();
         const data = val['Volume Data'];
         
         if(name.replaceAll('_', ' ') === data['Manga Title']) {
-          BooksContainer.innerHTML = RECENT_BOOK(key, data) + BooksContainer.innerHTML;
+          RecentBooksContainer.innerHTML = RECENT_BOOK(data) + RecentBooksContainer.innerHTML;
         }
         
       })
@@ -130,7 +130,7 @@ export default class Routes {
       const key = snapshot.key;
       const data = snapshot.val();
       
-      BlogContainer.innerHTML = CONTENT_BLOG(data) + BlogContainer.innerHTML;
+      BlogContainer.innerHTML = CONTENT_BLOG(data);
       PageTitle.textContent = data.Title;
     })
   }

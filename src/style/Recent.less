@@ -1,0 +1,58 @@
+.RecentBooksContainer {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  margin: 0 auto;
+}
+.RecentBooksContainer article {
+  position: relative;
+  overflow: hidden;
+  border:  .1rem solid rgba(0, 0, 0, .1);
+  text-align: center;
+  border: 1px solid #000;
+  border-radius: 4px;
+  min-height: 380px;
+  background: linear-gradient(25deg, #eee 50%, #fff 50.2%);
+}
+.RecentBooksContainer article .Cover {
+  padding: 1rem;
+}
+.RecentBooksContainer article .Cover .State {
+  position: absolute;
+  top: 2px;left: 2px;
+  z-index: 1;
+  background: #27ae60;
+  font-size: 1.6rem;
+  padding: 2px 8px;
+  border-radius: 8px;
+  color: #fff;
+}
+.RecentBooksContainer article .Cover img {
+  height: 25rem;
+  border: .5px solid #000;
+  border-radius: 4px;
+}
+.RecentBooksContainer article .Content {
+  padding: 1.5rem;
+}
+.RecentBooksContainer article .Content .Title {
+  font-size: 3rem;
+  color: #444;
+  font-weight: bold;
+  transition: 600ms;
+}
+.RecentBooksContainer article .Content a:hover {
+  text-decoration: underline;
+}
+.RecentBooksContainer article .Content .Info {
+  font-size: 2.2rem;
+  color: #444;
+  padding-top: 1rem;
+  display: block;
+}
+.RecentBooksContainer article .Content .Info span {
+  font-size: 1.5rem;
+  color: #666;
+  text-decoration: line-through;
+}

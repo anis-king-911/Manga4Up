@@ -1,29 +1,8 @@
 import { parse } from '/modules/Markdown.js';
 
-const HOME_BOOK = (id, arg)=> {
+const HOME_BOOK = (arg) => {
   let div =
-  `
-<article class="Book" id="${id}">
-  <div class="Cover">
-    <img src="${arg['Volume Cover']}" alt="" loading="lazy"/>
-  </div>
-  <div class="Content">
-    <div class="Title">${arg['Manga Title']}</div>
-    <div class="Info">${arg['Volume Number']} : رقم المجلد</div>
-    <div class="Info">${arg['File Size']} : حجم الملف</div>
-    
-    <a href="/Page/Manga/#/${arg['Manga Title'].replaceAll(' ', '_')}" class="btn">
-      صفحة المانجا
-    </a>
-  </div>
-</article>
-  `;
-
-  return div;
-}
-const LIST_BOOK = (arg)=> {
-  let div = 
-  `
+    `
 <article>
   <div class="Cover">
     <img src="${arg['Cover']}" alt="">
@@ -39,10 +18,28 @@ const LIST_BOOK = (arg)=> {
 
   return div;
 }
-const RECENT_BOOK = (id, arg)=> {
+const LIST_BOOK = (arg) => {
   let div =
-  `
-<article class="Book" id="${id}" x-data="{open : false}">
+    `
+<article>
+  <div class="Cover">
+    <img src="${arg['Cover']}" alt="">
+  </div>
+  <div class="Content">
+    <h3>${arg['Title']}</h3>
+    <div class="Info">Volume Count: <span>${arg['Count']}</span></div>
+    <div class="Info">Manga State: <span>${arg['State']}</span></div>
+    <a href="/Page/Manga/#/${arg['Title'].replaceAll(' ', '_')}" class="btn float"> صفحة المانجا </a>
+  </div>
+</article>
+  `;
+
+  return div;
+}
+const RECENT_BOOK = (arg) => {
+  let div =
+    `
+<article class="Book" x-data="{open : false}">
   <div class="Cover">
     <img src="${arg['Volume Cover']}" alt="" loading="lazy"/>
   </div>
@@ -83,49 +80,49 @@ const RECENT_BOOK = (id, arg)=> {
 
   return div;
 }
-const HOME_BLOG = (id, arg)=> {
+const HOME_BLOG = (id, arg) => {
   let div =
-  `
+    `
 <article>
   <div class="Cover">
-      <img src="${arg.Image}" alt="">
+    <img src="${arg.Image}" alt="">
   </div>
   <div class="Content">
-      <h3>${arg.Title}</h3>
-      <p>${String(arg.Content).slice(0, 30)}...</p>
-      <a href="/Page/Blog/#/${id}" class="btn">read more</a>
+    <h3>${arg.Title}</h3>
+    <p>${String(arg.Content).slice(0, 30)}...</p>
+    <a href="/Page/Blog/#/${id}" class="btn">read more</a>
   </div>
 </article>
   `;
-  
-  return div;
-} 
-const LIST_BLOG = (id, arg)=> {
-  let div =
-  `
-<article>
-  <div class="Cover">
-      <img src="${arg.Image}" alt="">
-  </div>
-  <div class="Content">
-      <h3>${arg.Title}</h3>
-      <p>${String(arg.Content).slice(0, 30)}...</p>
-      <a href="/Page/Blog/#/${id}" class="btn">read more</a>
-  </div>
-</article>
-  `;
-  
+
   return div;
 }
-const CONTENT_BLOG = (arg)=> {
+const LIST_BLOG = (id, arg) => {
   let div =
-  `
+    `
 <article>
   <div class="Cover">
-      <img src="${arg.Image}" alt="">
+    <img src="${arg.Image}" alt="">
   </div>
   <div class="Content">
-      <p>${String(parse(arg.Content))}...</p>
+    <h3>${arg.Title}</h3>
+    <p>${String(arg.Content).slice(0, 30)}...</p>
+    <a href="/Page/Blog/#/${id}" class="btn">read more</a>
+  </div>
+</article>
+  `;
+
+  return div;
+}
+const CONTENT_BLOG = (arg) => {
+  let div =
+    `
+<article>
+  <div class="Cover">
+    <img src="${arg.Image}" alt="">
+  </div>
+  <div class="Content">
+    <p>${String(parse(arg.Content))}...</p>
   </div>
 </article>
   `;

@@ -1,11 +1,11 @@
 import {
   initializeApp
-} from "/modules/firebase@9.8.4/firebase-app.js";
+} from '/modules/firebase@9.9.0/firebase-app.js';
 import {
   getDatabase, ref, child, onValue,
   query, orderByChild, limitToLast,
   push, set
-} from "/modules/firebase@9.8.4/firebase-database.js";
+} from '/modules/firebase@9.9.0/firebase-database.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAwI_lwV52VuKJYjeSID811WEv5u2AF70w",
